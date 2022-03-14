@@ -1,12 +1,12 @@
 from core.iterDebug import runOnSeq
-from core.log import printl
+from core.log import Dumper, printl
 from core.term import func, norm, Term, Func, Const, Var, termToStr
 from core.notation import *
 from core.iterAlgebra import comp, IterItem, iter_var
 from core.iterEq import automaton_diff, print_diff, backtrace_func_diff
 from core.iterExpr import automaton_expression
 from core.iterProg import *
-from core.iterMem import breadth_first_search_diff_mem, test_print
+from core.iterDiffMem import breadth_first_search_diff_mem, test_print
 from core.iter import tighten, tighten_iter
 from uc.ucnet import Exec, DummyAdv, SystemMes, UserMes, AdvMes
 
@@ -87,11 +87,11 @@ DummyAdv = DummyAdv.tighten()
 #breadth_first_search_diff_mem(Comp(X, Y), X(Y))
 #breadth_first_search_diff_mem(Z(Exec(A, N)), AdvZ(Z, A)(Exec(A, N)), test_print)
 #breadth_first_search_diff_mem(AdvZ, automaton_expression(1,2))
-def check_message_sent(n, h, hf):
-  printl(hf)
-  print(n.term().args[2].args[1])
-  pass
 
-breadth_first_search_diff_mem(Z(Exec(A, N)), AdvZ(Z, A, Exec(DummyAdv, N)), cbk=check_message_sent)
+breadth_first_search_diff_mem(
+  Z(Exec(A, N)).tighten(), 
+  AdvZ(Z, A, Exec(DummyAdv, N)).tighten(), 
+  cbk=Dumper("dumps/uc-dummy-adv.txt")
+)
 #printl(AdvZ(Z, A, Exec(DummyAdv, N)))
 

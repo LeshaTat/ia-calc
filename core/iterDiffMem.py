@@ -120,8 +120,15 @@ class DegCounter:
 
 class UsedGrouped:
   def __init__(self):
-    self.used = {}
+    self.used = []#{}
   def add(self, state, no_change=False):
+    if state.isEmpty():
+      return False
+    if state.isIn(self.used):
+      return False
+    if not no_change:
+      self.used.append(state)
+    return True
     if state.isEmpty():
       return False
     l = self.used.get(state.getGroupID(), [])
@@ -213,11 +220,9 @@ def breadth_first_search_diff_mem(f, g, cbk=None, partition=None):
       nxt = []
       def add_nxt(state, add=False):
         if not used.add(state, no_change=not add): 
-#          printlt_q(state.hf)
-          return
-#        if n.term().args[0]==c1:# and not deg:
-#          print("HERE IS IT")
+          return False
         nxt.append(state)
+        return True
       for state in cur:
         c = state.model
         identifier = c.identifier
@@ -238,29 +243,11 @@ def breadth_first_search_diff_mem(f, g, cbk=None, partition=None):
         except BaseException as e:
           print(e)
           raise DegException((c, h, hf, hg), state.hg if mode == mode1 else state.hf, None)
-#        if len(c.default.l)>max_default:
-#          max_default = len(c.default.l)
-#          print(max_default)
-        if len(hf)>max_hlen and False:
-          max_hlen = len(hf)
-          print("HLen: "+str(max_hlen))
-          print(len(cur))
-          if max_hlen==10:
-            for i, cc in enumerate(cur):
-              print("----------- "+str(i))
-              test_print(cc[0])
-              print("\n---\n")
-              print(cc[0].t.groupID)
-              print(cc[0].term().groupID)
-              print("\n\n".join([str(arg) for arg in cc[0].term().args]))
-              print("---")
-              printlt_q(cc[3])
-            print(len(cur))
-            exit(0)
       
         if deg is not None:
           deg.inc(len(cNext))
           deg.dec(hf if mode in (mode0, mode3) else hg)
+
         for n in cNext:
           nt = n.term() 
           nArgX = nt.args[1]
@@ -288,14 +275,7 @@ def breadth_first_search_diff_mem(f, g, cbk=None, partition=None):
               arg = nf.args[1].args[1]
               addr = arg.args[0]
               mem_res = n.enum_all_possibilities(ind, addr)
-  #            key = ind            
-  #            val = c0
-  #            if arg.name == "GetByAddr":
-  #              mem_res = n.get(addr)            
-  #            else:
-  #              val = arg.args[1]
-  #              mem_res = n.put(key, addr, val)
-  #              val = c0
+              added = False
               for n_mem in mem_res:
                 val = c0
                 hNextMem = h + [n]
@@ -306,17 +286,13 @@ def breadth_first_search_diff_mem(f, g, cbk=None, partition=None):
                   n_mem.put_key_val_by_ind(ind, addr, val)
                   val = c0
                 hNextMem = hNextMem + [n_mem]
-#                nhf = hf + [n_mem.term().args[4]]   
-
-  #              if arg.name == "GetByAddr":
-  #                val = n_mem.cursor.get(key)
-
-  #              n_mem = n_mem.applyTerm(response_mem_f(val))
                 n_mem.replace_term([2,1,1], val)
-#                n_mem.replace_term([4], n_mem.term().args[2].args[1])
                 hNextMem = hNextMem + [n_mem]   
                 nhf = hf + [pair(n_mem.term().args[2].args[1], arg)]   
-                add_nxt(StateModel(n_mem, hNextMem, nhf, hg, deg), add=True)
+                added_cur = add_nxt(StateModel(n_mem, hNextMem, nhf, hg, deg), add=True)
+                added = added or added_cur
+              if cbk is not None and not added:
+                cbk(n, h, hf, is_last=not added)
               continue
 
             if ng.isIn(StateMes(s, CallMes(Mem(x), y))):
@@ -325,13 +301,7 @@ def breadth_first_search_diff_mem(f, g, cbk=None, partition=None):
               addr = arg.args[0]
               val = c0
               mem_res = n.enum_all_possibilities(ind, addr)
-  #            key = ind            
-  #            if arg.name == "GetByAddr":
-  #              mem_res = n.get(addr)            
-  #            else:
-  #              val = arg.args[1]
-  #              mem_res = n.put(key, addr, val)
-  #              val = c0
+              added = False
               for n_mem in mem_res:
                 val = c0
                 hNextMem = h + [n]
@@ -342,15 +312,13 @@ def breadth_first_search_diff_mem(f, g, cbk=None, partition=None):
                   n_mem.put_key_val_by_ind(ind, addr, val)
                   val = c0
                 hNextMem = hNextMem + [n_mem]
-#                nhg = hg + [n_mem.term().args[4]]   
-  #              if arg.name == "GetByAddr":
-  #                val = n_mem.cursor.get(key)
                 n_mem.replace_term([3,1,1], val)
                 nhg = hg + [pair(n_mem.term().args[3].args[1], arg)]   
-#                n_mem.replace_term([4], n_mem.term().args[3].args[1])
-  #              n_mem = n_mem.applyTerm(response_mem_g(val))
                 hNextMem = hNextMem + [n_mem]   
-                add_nxt(StateModel(n_mem, hNextMem, hf, nhg, deg), add=True)
+                added = add_nxt(StateModel(n_mem, hNextMem, hf, nhg, deg), add=True)
+                added = added or added_cur
+              if cbk is not None and not added:
+                cbk(n, h, hg, is_last=not added)
               continue
           except BaseException as e:
             print_history(h+[n])
@@ -360,84 +328,71 @@ def breadth_first_search_diff_mem(f, g, cbk=None, partition=None):
           ndeg = deg
           if mode == mode0:
             nhf = hf
-            if nf.isIn(StateMes(s, x)):
-  #           wait_f[str(pair(nArgX, nf).norm)] = h + [n]
-              hNext = h + [n]   
-              nhf = hf + [n.term().args[4]]
-              n = n.applyTerm(changeC1, save_f_applied=True)
-              ndeg = DegCounter((n, hNext, nhf, ng))
-            else:
-              hNext = h + [n]   
-            add_nxt(StateModel(n, hNext, nhf, hg, ndeg), add=True)
+            n_prev = n
+            if not nf.isIn(StateMes(s, x)):
+              raise BaseException("Incorrect automaton output")
+            hNext = h + [n]   
+            nhf = hf + [n.term().args[4]]
+            n = n.applyTerm(changeC1, save_f_applied=True)
+            ndeg = DegCounter((n, hNext, nhf, ng))
+            added = add_nxt(StateModel(n, hNext, nhf, hg, ndeg), add=True)
+            if cbk is not None and not added:
+              cbk(n_prev, hNext, nhf, is_last=not added)
           elif mode == mode1:
-            if ng.isIn(StateMes(s, x)):
-              deg.done(nArgX, nt)
-  #            del wait_f[str(pair(nArgX, nf).norm)]
-              if not nt.isIn(cortege(a, q, StateMes(s, y), StateMes(d, y), b)):
-                print("Diff found for " + str(n.t))
+            if not ng.isIn(StateMes(s, x)):
+              raise BaseException("Incorrect automaton output")
+            deg.done(nArgX, nt)
+#            del wait_f[str(pair(nArgX, nf).norm)]
+            if not nt.isIn(cortege(a, q, StateMes(s, y), StateMes(d, y), b)):
+              print("Diff found for " + str(n.t))
 #                print("\nLast applied term\n")
 #                print(str(n.fApplied))
-                print("\n")
-                printlt_q(hf)
-                printlt_q(hg)
-                printlt(hf)
-                printlt(hg)
-                print_history(h+[n])
-                return
-              nhg = hg + [n.term().args[4]]
-              deg.dec(nhg)
+              print("\n")
+              printlt_q(hf)
+              printlt_q(hg)
+              printlt(hf)
+              printlt(hg)
+              print_history(h+[n])
+              return
+            nhg = hg + [n.term().args[4]]
+            deg.dec(nhg)
 #              deg = None
-              if cbk is not None:# and not n.isIn(used):
-                cbk(n, h, hf)
-              hNext = h + [n]
-              n = n.applyTerm(refreshX, save_f_applied=True)
-              n = n.applyTerm(changeC0, save_f_applied=True)
-              cnt = cnt + 1
-              identifier = (identifier[1], cnt)
-              n.identifier = identifier
-              n2 = n.applyTerm(changeC2)
-              hNext2 = h + [n2]   
-              add_nxt(StateModel(n, hNext, hf, nhg), add=True)
-              add_nxt(StateModel(n2, hNext2, hf, nhg), add=True)
-            else:
-              hNext = h# + [n]   
-              add_nxt(StateModel(n, hNext, hf, hg, deg), add=True)
+            if cbk is not None:# and not n.isIn(used):
+              cbk(n, h, hf)
+            hNext = h + [n]
+            n_prev = n
+            n = n.applyTerm(refreshX, save_f_applied=True)
+            n = n.applyTerm(changeC0, save_f_applied=True)
+            cnt = cnt + 1
+            identifier = (identifier[1], cnt)
+            n.identifier = identifier
+            n2 = n.applyTerm(changeC2)
+            hNext2 = h + [n2]   
+            added = add_nxt(StateModel(n, hNext, hf, nhg), add=True)
+            add_nxt(StateModel(n2, hNext2, hf, nhg), add=True)
+            if cbk is not None:
+              cbk(n_prev, hNext, nhg, is_last=not added)
           elif mode == mode2:
             nhg = hg
-            if ng.isIn(StateMes(s, x)):
-    #          wait_g[str(pair(nArgX, ng).norm)] = h + [n]
-              hNext = h + [n]   
-              nhg = hg + [n.term().args[4]]                
-              n = n.applyTerm(changeC3)
-              ndeg = DegCounter((n, hNext, hf, nhg))
-            else:
-              hNext = h + [n]   
+            if not ng.isIn(StateMes(s, x)):
+              raise BaseException("Incorrect automaton output")
+            hNext = h + [n]   
+            nhg = hg + [n.term().args[4]]                
+            n = n.applyTerm(changeC3)
+            ndeg = DegCounter((n, hNext, hf, nhg))
             add_nxt(StateModel(n, hNext, hf, nhg, ndeg), add=True)
           elif mode == mode3:
             nhf = hf
-            if nf.isIn(StateMes(s, x)):
-              nhf = hf + [n.term().args[4]]
-              deg.done(nArgX, nt)
-              deg.dec(nhf)
-    #          del wait_g[str(pair(nArgX, ng).norm)]
-              continue
-            else:
-              hNext = h# + [n]   
+            if not nf.isIn(StateMes(s, x)):
+              raise BaseException("Incorrect automaton output")
+            nhf = hf + [n.term().args[4]]
+            deg.done(nArgX, nt)
+            deg.dec(nhf)
+            continue
             add_nxt(StateModel(n, hNext, nhf, hg, deg), add=True)
-  #  if wait_f or wait_g:
-  #    print("Degradation found")
-  #    print("For f: ")
-  #    for k, hl_f in wait_f.items():
-  #      print(k)
-  #      for h_f in hl_f:
-  #        print(h_f.t)
-  #    print("For g: ")
-  #    for k, hl_g in wait_g.items():
-  #      print(k)
-  #      for h_g in hl_g:
-  #        print(h_g.t)
-  #    return
     print("Diff not found")
+    if cbk and getattr(cbk, "close", None) is not None:
+      cbk.close()
   except DegException as e:
     print("Diff degradation found for")
     print("\n\n".join([str(arg) for arg in e.start[0].term().args]))

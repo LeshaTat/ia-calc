@@ -5,7 +5,7 @@ from core.iterAlgebra import comp, IterItem, iter_var
 from core.iterEq import automaton_diff, print_diff, backtrace_func_diff
 from core.iterExpr import automaton_expression
 from core.iterProg import *
-from core.iterMem import breadth_first_search_diff_mem, test_print
+from core.iterDiffMem import breadth_first_search_diff_mem, test_print
 from core.iter import tighten, tighten_iter
 
 lk = Var('lk')

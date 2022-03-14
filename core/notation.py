@@ -1,4 +1,4 @@
-from .term import Func, Const, Var, pair, empty, vN
+from .term import ID, Func, Const, Var, pair, empty, vN
 
 def cN(n):
   return Const(str(n))
@@ -36,6 +36,11 @@ GetByAddr = Func("GetByAddr", 1)
 
 StateSet = Func("StateSet", 3)
 StateGet = Func("StateGet", 2)
+
+mode0 = ID(c0)
+mode1 = ID(c1)
+mode2 = ID(c2)
+mode3 = ID(c3)
 
 """ def StateMesOut(a):
   return StateMes(c0, MesOut(a))
