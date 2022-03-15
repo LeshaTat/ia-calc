@@ -2,7 +2,6 @@ from core.iterProg import *
 from core.term import func, norm, Term, Func, Const, Var, termToStr
 from core.notation import *
 from core.iterAlgebra import comp, IterItem, iter_var, carthesian
-from core.iterEq import automaton_diff, print_diff, backtrace_func_diff
 from core.iterDiff import breadth_first_search_diff, mode0
 from core.log import Dumper, printl
 from core.iterProgStandard import composition, composition2, callCbk, callCbk2
@@ -10,12 +9,6 @@ from core.iterProgStandard import composition, composition2, callCbk, callCbk2
 X = iter_var('X')
 Y = iter_var('Y')
 Z = iter_var('Z')
-#I = automaton_expression(1)
-#Comp = automaton_expression((1, 2))
-#B = automaton_expression((1, (2, 3)))
-#K = automaton_expression((1), 2)
-#S = automaton_expression((1, 3, (2, 3)))
-#C = automaton_expression(((1, 3), 2))
 
 I = program(
   1,
@@ -73,20 +66,6 @@ S = program(
   ]
 ).tighten()
 
-def check_message_sent(n, h, is_last=False):
-  print("*** "+str(is_last))
-  for c in h:
-    if c.term().args[0]!=mode0:
-      continue
-    print(str(c.term().args[1].args[1])+" ->")
-    print(c.term().args[2].args[1])
-    print()
-  pass
-
-printl(K)
-printl(K(X, Y))
-
-
 print("Composition")
 breadth_first_search_diff(
   composition(X, Y).tighten(), 
@@ -105,28 +84,28 @@ breadth_first_search_diff(
 
 print("B")
 breadth_first_search_diff(
-  B(X, Y, Z).tighten(), 
-  X(Y(Z)).tighten(), 
+  B(X, Y, Z), 
+  X(Y(Z)), 
   cbk=Dumper("dumps/combinators-B.txt")
 )
 
 print("C")
 breadth_first_search_diff(
-  C(X, Y, Z).tighten(), 
-  X(Z, Y).tighten(), 
+  C(X, Y, Z), 
+  X(Z, Y), 
   cbk=Dumper("dumps/combinators-C.txt")
 )
 
 print("K")
 breadth_first_search_diff(
-  K(X, Y).tighten(), 
+  K(X, Y), 
   X, 
   Dumper("dumps/combinators-K.txt")
 )
 
 print("SKK=I")
 breadth_first_search_diff(
-  S(K, K).tighten(), 
+  S(K, K), 
   I, 
   cbk=Dumper("dumps/combinators-SKK.txt")
 )
@@ -134,20 +113,21 @@ breadth_first_search_diff(
 print("B=S(KS)S")
 breadth_first_search_diff(
   B, 
-  S(K(S), K).tighten(), 
+  S(K(S), K), 
   cbk=Dumper("dumps/combinators-B-SKSS.txt")
 )
 
 print("C = (S (S (K (S (K S) K)) S) (K K))")
+formula = S(S(K(S(K(S), K)), S), K(K))
 breadth_first_search_diff(
   C, 
-  S(S(K(S(K(S), K)), S), K(K)).tighten(), 
+  formula, 
   cbk=Dumper("dumps/combinators-C-SSKSKSKSKK.txt")
 )
 
 print("S")
 breadth_first_search_diff(
-  S(X, Y, Z).tighten(), 
-  X(Z, Y(Z)).tighten(), 
+  S(X, Y, Z), 
+  X(Z, Y(Z)), 
   no_debug=True
 )

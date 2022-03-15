@@ -174,7 +174,7 @@ class Message(ProgOperator):
     ar.append(
       func(
         Iter(ctx.makePosVarsInp(lineFrom, patternVars, lambda inp: self.pattern)),
-        Iter(ctx.makePosVarsInp(lineTo, {}, lambda inp: self.pattern))
+        Iter(ctx.makePosVarsInp(lineTo, {}, lambda inp: c0))
       )
     )
 
@@ -262,7 +262,7 @@ class Call(ProgOperator):
         a = self.v
       ar.append(
         func(
-          StateMesIn(ctx.makePosVarsInp(lineFrom), lib_wrapper(self.func, a)),
+          StateMesIn(ctx.makePosVarsInp(lineFrom), Ret(a)),
           Iter(ctx.makePosVarsInp(lineTo, d))
         )
       )

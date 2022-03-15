@@ -35,45 +35,45 @@ const_g = ID(Const('g'))
 mem = Func("mem", 2)
 
 refreshX = MapModel.extendFunc(func(
-  cortege(d, q, StateMes(sf, xf), StateMes(sg, yg), b),
-  cortege(d, q, StateMes(sf, y), StateMes(sg, y), b)
+  cortege(d, q, StateMesOut(sf, xf), StateMesOut(sg, yg), b),
+  cortege(d, q, StateMesIn(sf, y), StateMesIn(sg, y), b)
 ))
 
 changeC0  = MapModel.extendFunc(func(
-  cortege(d, q, StateMes(s, x), y, b),
-  cortege(mode0, StateMes(s, x), StateMes(s, x), y, x)
+  cortege(d, q, StateMesIn(s, x), y, b),
+  cortege(mode0, StateMesIn(s, x), StateMesIn(s, x), y, x)
 ))
 changeC1  = MapModel.extendFunc(func(
-  cortege(d, q, x, StateMes(s, y), b),
-  cortege(mode1, q, x, StateMes(s, y), y)
+  cortege(d, q, x, StateMesIn(s, y), b),
+  cortege(mode1, q, x, StateMesIn(s, y), y)
 ))
 changeC2  = MapModel.extendFunc(func(
-  cortege(d, q, x, StateMes(s, y), b),
-  cortege(mode2, StateMes(s, y), x, StateMes(s, y), y)
+  cortege(d, q, x, StateMesIn(s, y), b),
+  cortege(mode2, StateMesIn(s, y), x, StateMesIn(s, y), y)
 ))
 changeC3  = MapModel.extendFunc(func(
-  cortege(d, q, StateMes(s, x), y, b),
-  cortege(mode3, q, StateMes(s, x), y, x)
+  cortege(d, q, StateMesIn(s, x), y, b),
+  cortege(mode3, q, StateMesIn(s, x), y, x)
 ))
 
 Debug = Const('Debug')
 changeDebug0  = MapModel.extendFunc(func(
-  cortege(d, q, StateMes(s, CallMes(Debug, x)), y, b),
-  cortege(d, q, StateMes(s, CallMes(Debug, c0)), y, b)
+  cortege(d, q, StateMesOut(s, Lib(Debug, x)), y, b),
+  cortege(d, q, StateMesIn(s, Ret(c0)), y, b)
 ))
 changeDebug1  = MapModel.extendFunc(func(
-  cortege(d, q, x, StateMes(s, CallMes(Debug, y)), b),
-  cortege(d, q, x, StateMes(s, CallMes(Debug, c0)), y)
+  cortege(d, q, x, StateMesOut(s, Lib(Debug, y)), b),
+  cortege(d, q, x, StateMesIn(s, Ret(c0)), y)
 ))
 
 response_mem_f = lambda v: MapModel.extendFunc(func(
-  cortege(d, q, StateMes(s, CallMes(x, y)), a, b),
-  cortege(d, q, StateMes(s, CallMes(x, v)), a, CallMes(x, v))
+  cortege(d, q, StateMesOut(s, Mem(x, y)), a, b),
+  cortege(d, q, StateMesIn(s, Ret(v)), a, Ret(v))
 ))
 
 response_mem_g = lambda v: MapModel.extendFunc(func(
-  cortege(d, q, a, StateMes(s, CallMes(x, y)), b),
-  cortege(d, q, a, StateMes(s, CallMes(x, v)), CallMes(x, v))
+  cortege(d, q, a, StateMesOut(s, Mem(x, y)), b),
+  cortege(d, q, a, StateMesIn(s, Ret(v)), Ret(v))
 ))
 
 def printl(l):
@@ -165,9 +165,9 @@ def breadth_first_search_diff_mem(f, g, cbk=None, partition=None):
       MapModel(
         cortege(
           mode0, 
-          StateMes(c0, x), 
-          StateMes(c0, x), 
-          StateMes(c0, x), 
+          StateMesIn(c0, x), 
+          StateMesIn(c0, x), 
+          StateMesIn(c0, x), 
           x
         ), 
         identifier=(0, 1),
@@ -179,9 +179,9 @@ def breadth_first_search_diff_mem(f, g, cbk=None, partition=None):
       MapModel(
         cortege(
           mode2, 
-          StateMes(c0, x), 
-          StateMes(c0, x), 
-          StateMes(c0, x), 
+          StateMesIn(c0, x), 
+          StateMesIn(c0, x), 
+          StateMesIn(c0, x), 
           x
         ), 
         identifier=(0, 1),
@@ -256,22 +256,22 @@ def breadth_first_search_diff_mem(f, g, cbk=None, partition=None):
 
           hNext = h
           try:
-            if nf.isIn(StateMes(s, CallMes(Debug, x))):
+            if nf.isIn(StateMesOut(s, Lib(Debug, x))):
               nhf = hf + [n.term().args[2].args[1]]   
               hNextMem = h + [n]
               n = n.applyTerm(changeDebug0, save_f_applied=True)
               add_nxt(StateModel(n, hNextMem, nhf, hg, deg), add=True)
               continue
 
-            if ng.isIn(StateMes(s, CallMes(Debug, x))):
+            if ng.isIn(StateMesOut(s, Lib(Debug, x))):
               nhg = hg + [n.term().args[3].args[1]]   
               hNextMem = h + [n]
               n = n.applyTerm(changeDebug1, save_f_applied=True)
               add_nxt(StateModel(n, hNextMem, hf, nhg, deg), add=True)
               continue
             
-            if nf.isIn(StateMes(s, CallMes(Mem(x), y))):
-              ind = pair(const_f, nf.args[1].args[0].args[0])
+            if nf.isIn(StateMesOut(s, Mem(x, y))):
+              ind = pair(const_f, nf.args[1].args[0])
               arg = nf.args[1].args[1]
               addr = arg.args[0]
               mem_res = n.enum_all_possibilities(ind, addr)
@@ -286,17 +286,18 @@ def breadth_first_search_diff_mem(f, g, cbk=None, partition=None):
                   n_mem.put_key_val_by_ind(ind, addr, val)
                   val = c0
                 hNextMem = hNextMem + [n_mem]
-                n_mem.replace_term([2,1,1], val)
-                hNextMem = hNextMem + [n_mem]   
-                nhf = hf + [pair(n_mem.term().args[2].args[1], arg)]   
-                added_cur = add_nxt(StateModel(n_mem, hNextMem, nhf, hg, deg), add=True)
+                n_mem_v = n_mem.applyTerm(response_mem_f(val), save_f_applied=True)
+#                n_mem.replace_term([2,1], Ret(val))
+                hNextMem = hNextMem + [n_mem_v]   
+                nhf = hf + [pair(n_mem_v.term().args[2].args[1], arg)]   
+                added_cur = add_nxt(StateModel(n_mem_v, h, nhf, hg, deg), add=True)
                 added = added or added_cur
               if cbk is not None and not added:
                 cbk(n, h, hf, is_last=not added)
               continue
 
-            if ng.isIn(StateMes(s, CallMes(Mem(x), y))):
-              ind = pair(const_g, ng.args[1].args[0].args[0])
+            if ng.isIn(StateMesOut(s, Mem(x, y))):
+              ind = pair(const_g, ng.args[1].args[0])
               arg = ng.args[1].args[1]
               addr = arg.args[0]
               val = c0
@@ -312,10 +313,11 @@ def breadth_first_search_diff_mem(f, g, cbk=None, partition=None):
                   n_mem.put_key_val_by_ind(ind, addr, val)
                   val = c0
                 hNextMem = hNextMem + [n_mem]
-                n_mem.replace_term([3,1,1], val)
-                nhg = hg + [pair(n_mem.term().args[3].args[1], arg)]   
-                hNextMem = hNextMem + [n_mem]   
-                added = add_nxt(StateModel(n_mem, hNextMem, hf, nhg, deg), add=True)
+                n_mem_v = n_mem.applyTerm(response_mem_g(val), save_f_applied=True)
+#                n_mem.replace_term([3,1], Ret(val))
+                nhg = hg + [pair(n_mem_v.term().args[3].args[1], arg)]   
+                hNextMem = hNextMem + [n_mem_v]   
+                added = add_nxt(StateModel(n_mem_v, h, hf, nhg, deg), add=True)
                 added = added or added_cur
               if cbk is not None and not added:
                 cbk(n, h, hg, is_last=not added)
@@ -329,7 +331,7 @@ def breadth_first_search_diff_mem(f, g, cbk=None, partition=None):
           if mode == mode0:
             nhf = hf
             n_prev = n
-            if not nf.isIn(StateMes(s, x)):
+            if not nf.isIn(StateMesOut(s, x)):
               raise BaseException("Incorrect automaton output")
             hNext = h + [n]   
             nhf = hf + [n.term().args[4]]
@@ -339,11 +341,11 @@ def breadth_first_search_diff_mem(f, g, cbk=None, partition=None):
             if cbk is not None and not added:
               cbk(n_prev, hNext, nhf, is_last=not added)
           elif mode == mode1:
-            if not ng.isIn(StateMes(s, x)):
+            if not ng.isIn(StateMesOut(s, x)):
               raise BaseException("Incorrect automaton output")
             deg.done(nArgX, nt)
 #            del wait_f[str(pair(nArgX, nf).norm)]
-            if not nt.isIn(cortege(a, q, StateMes(s, y), StateMes(d, y), b)):
+            if not nt.isIn(cortege(a, q, StateMesOut(s, y), StateMesOut(d, y), b)):
               print("Diff found for " + str(n.t))
 #                print("\nLast applied term\n")
 #                print(str(n.fApplied))
@@ -374,7 +376,7 @@ def breadth_first_search_diff_mem(f, g, cbk=None, partition=None):
               cbk(n_prev, hNext, nhg, is_last=not added)
           elif mode == mode2:
             nhg = hg
-            if not ng.isIn(StateMes(s, x)):
+            if not ng.isIn(StateMesOut(s, x)):
               raise BaseException("Incorrect automaton output")
             hNext = h + [n]   
             nhg = hg + [n.term().args[4]]                
@@ -383,7 +385,7 @@ def breadth_first_search_diff_mem(f, g, cbk=None, partition=None):
             add_nxt(StateModel(n, hNext, hf, nhg, ndeg), add=True)
           elif mode == mode3:
             nhf = hf
-            if not nf.isIn(StateMes(s, x)):
+            if not nf.isIn(StateMesOut(s, x)):
               raise BaseException("Incorrect automaton output")
             nhf = hf + [n.term().args[4]]
             deg.done(nArgX, nt)

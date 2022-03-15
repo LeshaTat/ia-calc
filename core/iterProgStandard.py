@@ -7,7 +7,7 @@ def lib(ret, F, mes):
 
 def mem(ret, k, mes):
   return lambda v: [
-    Call(ret, Mem(k), mes),
+    Call(ret, k, mes, mem=True),
   ]
 
 composition = program(
@@ -36,12 +36,14 @@ def callCbk(ret, F, mes, cbk):
     Branches([
       [
         Parse(Down(v('mesAB')), v('mesA')),
+        Set(v('mesA'), c0),
         cbk(v('mesAB')),
         Call(v('mesA'), F, Down(v('mesAB'))),
         Back()
       ],
       [
         Parse(Up(ret), v('mesA')),
+        Set(v('mesAB'), c0)
       ]
     ])
   ]
@@ -52,18 +54,24 @@ def callCbk2(ret, F, mes, cbk1, cbk2):
     Branches([
       [
         Parse(Down(v('mesAB')), v('mesA')),
+        Set(v('mesA'), c0),
+        Set(v('mesAC'), c0),
         cbk1(v('mesAB')),
         Call(v('mesA'), F, Down(v('mesAB'))),
         Back()
       ],
       [
         Parse(Up(Down(v('mesAC'))), v('mesA')),
+        Set(v('mesA'), c0),
+        Set(v('mesAB'), c0),
         cbk2(v('mesAC')),
         Call(v('mesA'), F, Up(Down(v('mesAC')))),
         Back()
       ],
       [
         Parse(Up(Up(ret)), v('mesA')),
+        Set(v('mesAC'), c0),
+        Set(v('mesAB'), c0)
       ]
     ])
   ]
