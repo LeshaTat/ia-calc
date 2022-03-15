@@ -1,9 +1,8 @@
 from core.iterProg import *
 from core.term import func, norm, Term, Func, Const, Var, termToStr
 from core.notation import *
-from core.iterAlgebra import comp, IterItem, iter_var
+from core.iterAlgebra import comp, IterItem, iter_var, carthesian
 from core.iterEq import automaton_diff, print_diff, backtrace_func_diff
-from core.iterExpr import automaton_expression
 from core.iterDiff import breadth_first_search_diff, mode0
 from core.log import Dumper, printl
 from core.iterProgStandard import composition, composition2, callCbk, callCbk2
@@ -84,13 +83,18 @@ def check_message_sent(n, h, is_last=False):
     print()
   pass
 
+printl(K)
+printl(K(X, Y))
+
+
 print("Composition")
-printl(composition)
 breadth_first_search_diff(
   composition(X, Y).tighten(), 
   X(Y).tighten(), 
   cbk=Dumper("dumps/composition.txt")
 )
+
+#exit(0)
 
 print("Composition2")
 breadth_first_search_diff(

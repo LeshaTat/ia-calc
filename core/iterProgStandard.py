@@ -14,16 +14,16 @@ composition = program(
   2,
   lambda v, F, G: [
     Message(v('mes')),
-    Call(v('mesA'), F, UpMes(v('mes'))),
+    Call(v('mesA'), F, Up(v('mes'))),
     Branches([
       [
-        Parse(DownMes(v('mesAB')), v('mesA')),
+        Parse(Down(v('mesAB')), v('mesA')),
         Call(v('mesBA'), G, v('mesAB')),
-        Call(v('mesA'), F, DownMes(v('mesBA'))),
+        Call(v('mesA'), F, Down(v('mesBA'))),
         Back()
       ],
       [
-        Parse(UpMes(v('mes')), v('mesA')),
+        Parse(Up(v('mes')), v('mesA')),
         Return(v('mes'))
       ]
     ])
@@ -32,38 +32,38 @@ composition = program(
 
 def callCbk(ret, F, mes, cbk):
   return lambda v: [
-    Call(v('mesA'), F, UpMes(mes)),
+    Call(v('mesA'), F, Up(mes)),
     Branches([
       [
-        Parse(DownMes(v('mesAB')), v('mesA')),
+        Parse(Down(v('mesAB')), v('mesA')),
         cbk(v('mesAB')),
-        Call(v('mesA'), F, DownMes(v('mesAB'))),
+        Call(v('mesA'), F, Down(v('mesAB'))),
         Back()
       ],
       [
-        Parse(UpMes(ret), v('mesA')),
+        Parse(Up(ret), v('mesA')),
       ]
     ])
   ]
 
 def callCbk2(ret, F, mes, cbk1, cbk2):
   return lambda v: [
-    Call(v('mesA'), F, UpMes(UpMes(mes))),
+    Call(v('mesA'), F, Up(Up(mes))),
     Branches([
       [
-        Parse(DownMes(v('mesAB')), v('mesA')),
+        Parse(Down(v('mesAB')), v('mesA')),
         cbk1(v('mesAB')),
-        Call(v('mesA'), F, DownMes(v('mesAB'))),
+        Call(v('mesA'), F, Down(v('mesAB'))),
         Back()
       ],
       [
-        Parse(UpMes(DownMes(v('mesAC'))), v('mesA')),
+        Parse(Up(Down(v('mesAC'))), v('mesA')),
         cbk2(v('mesAC')),
-        Call(v('mesA'), F, UpMes(DownMes(v('mesAC')))),
+        Call(v('mesA'), F, Up(Down(v('mesAC')))),
         Back()
       ],
       [
-        Parse(UpMes(UpMes(ret)), v('mesA')),
+        Parse(Up(Up(ret)), v('mesA')),
       ]
     ])
   ]

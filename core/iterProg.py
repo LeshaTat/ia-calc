@@ -117,7 +117,7 @@ def nUpA(n, a):
   if n==0:
     return a
   else:
-    return UpMes(nUpA(n-1, a))
+    return Up(nUpA(n-1, a))
     
 class Program:
   def __init__(self, argsN, makeList):    
@@ -139,13 +139,13 @@ class Program:
     ar = []
     ar.append(
       func(
-        StateMes(c0, OutMes(nUpA(ctx.nUp, ctx.vctx.inputVar))),
+        StateMesIn(c0, Out(nUpA(ctx.nUp, ctx.vctx.inputVar))),
         Iter(ctx.makePosVars0Inp(0))
       )
     )
     ar.append(
       func(
-        StateMes(ctx.makeStateVars(), OutMes(nUpA(ctx.nUp, ctx.vctx.inputVar))),
+        StateMesIn(ctx.makeStateVars(), Out(nUpA(ctx.nUp, ctx.vctx.inputVar))),
         Iter(ctx.makePosVarsInpFromState(0))
       )
     )
@@ -187,7 +187,7 @@ class Return(ProgOperator):
     ar.append(
       func(
         Iter(ctx.makePosVarsInp(lineFrom)),
-        StateMes(ctx.makeStateVars(), OutMes(nUpA(ctx.nUp, self.pattern)))
+        StateMesOut(ctx.makeStateVars(), Out(nUpA(ctx.nUp, self.pattern)))
       )
     )
 
@@ -231,23 +231,27 @@ class Set(ProgOperator):
     )
 
 def nUpDownA(n, a):
-  return nUpA(n, DownMes(a))
+  return nUpA(n, Down(a))
 
 class Call(ProgOperator):
-  def __init__(self, v, func, arg):
+  def __init__(self, v, func, arg, mem=False):
     self.v = v
     self.func = func
     self.arg = arg
+    self.mem = mem
   def fillVars(self, vctx):
     self.arg.fillVars(VarType.RIGHT, vctx.vars)
     if self.v.isVar:
       vctx.addLeft(self.v)
   def addIterRules(self, ar, ctx, lineFrom, lineTo, lineBack):
     if isinstance(self.func, Term):
+      lib_wrapper = Lib
+      if self.mem:
+        lib_wrapper = Mem
       ar.append(
         func(
           Iter(ctx.makePosVarsInp(lineFrom)),
-          StateMes(ctx.makePosVarsInp(lineFrom), CallMes(self.func, self.arg))
+          StateMesOut(ctx.makePosVarsInp(lineFrom), lib_wrapper(self.func, self.arg))
         )
       )
       d = {}
@@ -258,7 +262,7 @@ class Call(ProgOperator):
         a = self.v
       ar.append(
         func(
-          StateMes(ctx.makePosVarsInp(lineFrom), CallMes(self.func, a)),
+          StateMesIn(ctx.makePosVarsInp(lineFrom), lib_wrapper(self.func, a)),
           Iter(ctx.makePosVarsInp(lineTo, d))
         )
       )
@@ -266,7 +270,7 @@ class Call(ProgOperator):
     ar.append(
       func(
         Iter(ctx.makePosVarsInp(lineFrom)),
-        StateMes(ctx.makePosVarsInp(lineFrom), OutMes(nUpDownA(self.func, self.arg)))
+        StateMesOut(ctx.makePosVarsInp(lineFrom), Out(nUpDownA(self.func, self.arg)))
       )
     )
     dFr = {}
@@ -278,7 +282,7 @@ class Call(ProgOperator):
       a = self.v
     ar.append(
       func(
-        StateMes(ctx.makePosVarsInp(lineFrom, dFr), OutMes(nUpDownA(self.func, a))),
+        StateMesIn(ctx.makePosVarsInp(lineFrom, dFr), Out(nUpDownA(self.func, a))),
         Iter(ctx.makePosVarsInp(lineTo, d))
       )
     )
@@ -350,26 +354,6 @@ class Branches(ProgOperator):
       branch.addIterRules(ar, ctx,
           lineZero,
           lineTo,
-          lineFrom
-        )
-  def addIterRulesOld(self, ar, ctx, lineFrom, lineTo, lineBack):
-    lineBase = listify(lineFrom)
-    for (i, branch) in enumerate(self.branches):
-      lineZero = lineBase + [i]
-      ar.append(
-        func(
-          Iter(ctx.makePosVarsInp(lineFrom)),
-          Iter(ctx.makePosVarsInp(lineZero+[0]))
-        )
-      )
-      for (j, op) in enumerate(branch):
-        if callable(op):
-          op = op(VarsGenerator(ctx.vctx))
-        if isinstance(op, list):
-          op = Block(op)
-        op.addIterRules(ar, ctx,
-          lineZero + [j],
-          lineZero + [(j+1)] if j+1<len(branch) else lineTo,
           lineFrom
         )
 

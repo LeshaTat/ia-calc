@@ -26,25 +26,25 @@ const_f = ID(Const('f'))
 const_g = ID(Const('g'))
 
 refreshX = func(
-  cortege(d, q, StateMes(sf, xf), StateMes(sg, yg), b),
-  cortege(d, q, StateMes(sf, y), StateMes(sg, y), b)
+  cortege(d, q, StateMesOut(sf, xf), StateMesOut(sg, yg), b),
+  cortege(d, q, StateMesIn(sf, y), StateMesIn(sg, y), b)
 )
 
 changeC0  = func(
-  cortege(d, q, StateMes(s, x), y, b),
-  cortege(mode0, StateMes(s, x), StateMes(s, x), y, x)
+  cortege(d, q, StateMesIn(s, x), y, b),
+  cortege(mode0, StateMesIn(s, x), StateMesIn(s, x), y, x)
 )
 changeC1  = func(
-  cortege(d, q, x, StateMes(s, y), b),
-  cortege(mode1, q, x, StateMes(s, y), y)
+  cortege(d, q, x, StateMesIn(s, y), b),
+  cortege(mode1, q, x, StateMesIn(s, y), y)
 )
 changeC2  = func(
-  cortege(d, q, x, StateMes(s, y), b),
-  cortege(mode2, StateMes(s, y), x, StateMes(s, y), y)
+  cortege(d, q, x, StateMesIn(s, y), b),
+  cortege(mode2, StateMesIn(s, y), x, StateMesOut(s, y), y)
 )
 changeC3  = func(
-  cortege(d, q, StateMes(s, x), y, b),
-  cortege(mode3, q, StateMes(s, x), y, x)
+  cortege(d, q, StateMesIn(s, x), y, b),
+  cortege(mode3, q, StateMesIn(s, x), y, x)
 )
 
 
@@ -151,10 +151,10 @@ class StateModel:
 def breadth_first_search_diff(f, g, cbk=None, no_debug=False):
   nxt = [
     StateModel(DiffState(
-      cortege(mode0, StateMes(c0, x), StateMes(c0, x), StateMes(c0, x), x), identifier=(0, 1)
+      cortege(mode0, StateMesIn(c0, x), StateMesIn(c0, x), StateMesIn(c0, x), x), identifier=(0, 1)
       ), [], [], [], deg = None),
     StateModel(DiffState(
-      cortege(mode2, StateMes(c0, x), StateMes(c0, x), StateMes(c0, x), x), identifier=(0, 1)
+      cortege(mode2, StateMesIn(c0, x), StateMesIn(c0, x), StateMesIn(c0, x), x), identifier=(0, 1)
       ), [], [], [], deg = None)
   ]
   ff = func(func(x, y), func(cortege(d, q, x, a, b), cortege(d, q, y, a, b)))(f)
@@ -204,7 +204,7 @@ def breadth_first_search_diff(f, g, cbk=None, no_debug=False):
           if mode == mode0:
             nhf = hf
             n_prev = n
-            if not nf.isIn(StateMes(s, x)):
+            if not nf.isIn(StateMesOut(s, x)):
               raise BaseException("Incorrect automaton output")
             hNext = h + [n]   
             nhf = hf + [n.term().args[4]]
@@ -214,10 +214,10 @@ def breadth_first_search_diff(f, g, cbk=None, no_debug=False):
             if cbk is not None and not added:
               cbk(n_prev, hNext, is_last=not added)
           elif mode == mode1:
-            if not ng.isIn(StateMes(s, x)):
+            if not ng.isIn(StateMesOut(s, x)):
               raise BaseException("Incorrect automaton output")
             deg.done(nArgX, nt)
-            if not nt.isIn(cortege(a, q, StateMes(s, y), StateMes(d, y), b)):
+            if not nt.isIn(cortege(a, q, StateMesOut(s, y), StateMesOut(d, y), b)):
               print("Diff found for " + str(n.t))
               print("\n")
               if no_debug: return
@@ -242,7 +242,7 @@ def breadth_first_search_diff(f, g, cbk=None, no_debug=False):
               cbk(n_prev, hNext, is_last=not added)
           elif mode == mode2:
             nhg = hg
-            if not ng.isIn(StateMes(s, x)):
+            if not ng.isIn(StateMesOut(s, x)):
               raise BaseException("Incorrect automaton output")
             hNext = h + [n]   
             nhg = hg + [n.term().args[4]]                
@@ -251,7 +251,7 @@ def breadth_first_search_diff(f, g, cbk=None, no_debug=False):
             add_nxt(StateModel(n, hNext, hf, nhg, ndeg), add=True)
           elif mode == mode3:
             nhf = hf
-            if not nf.isIn(StateMes(s, x)):
+            if not nf.isIn(StateMesOut(s, x)):
               raise BaseException("Incorrect automaton output")
             nhf = hf + [n.term().args[4]]
             deg.done(nArgX, nt)

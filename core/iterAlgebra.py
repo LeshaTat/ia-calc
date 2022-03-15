@@ -14,8 +14,97 @@ q = Var('q')
 s0 = Var('s0')
 k = Var('k')
 
-StateMesIn = Func("StateMesIn", 2)
-StateMesOut = Func("StateMesOut", 2)
+def carthesian(f, g):
+  PartF = Func('PartF', 2)
+  PartG = Func('PartG', 2)
+  FGState = Func('FGState', 2)
+  MesF = Func('MesF', 1)
+  MesG = Func('MesG', 1)
+  iterF = func(
+    func(x, y),
+    func(
+      Iter(PartF(q,x)), Iter(PartF(q,y))
+    )
+  )(f)
+  iterG = func(
+    func(x, y),
+    func(
+      Iter(PartG(q,x)), Iter(PartG(q,y))
+    )
+  )(g)
+  inF = func(
+    StateMesIn(FGState(s,d),MesF(x)), Iter(PartF(d,StateMesIn(s,x)))
+  )
+  inF0 = func(
+    StateMesIn(c0,MesF(x)), Iter(PartF(c0,StateMesIn(c0,x)))
+  )
+  inG = func(
+    StateMesIn(FGState(s,d),MesG(x)), Iter(PartG(s,StateMesIn(d,x)))
+  )
+  inG0 = func(
+    StateMesIn(c0,MesG(x)), Iter(PartG(c0,StateMesIn(c0,x)))
+  )
+  outF = func(
+    Iter(PartF(d,StateMesOut(s,x))), StateMesOut(FGState(s,d),MesF(x))
+  )
+  outG = func(
+    Iter(PartG(s,StateMesOut(d,x))), StateMesOut(FGState(s,d),MesG(x))
+  )
+  return iterF + iterG + [inF, inF0, inG, inG0, outF, outG]
+
+def comp(f, g):
+  MesF = Func('MesF', 1)
+  MesG = Func('MesG', 1)
+  SLibF = Func('SLibF', 1)
+  SLibG = Func('SLibG', 1)
+  ForkF = Func('ForkF', 1)
+  ForkG = Func('ForkG', 1)
+  SOut =  Func('SOut', 1)
+  fg = carthesian(f, g)
+  in0 = func(
+    StateMesIn(c0, Out(x)), StateMesIn(c0,MesF(Out(Up(x))))
+  )
+  inS = func(
+    StateMesIn(SOut(s), Out(x)), StateMesIn(s,MesF(Out(Up(x))))
+  )
+  inOutIter = func(
+    Iter(x), Iter(x)
+  )
+  inLibF = func(
+    StateMesIn(SLibF(s),Ret(x)), StateMesIn(s,MesF(Ret(x)))
+  )
+  inLibG = func(
+    StateMesIn(SLibG(s),Ret(x)), StateMesIn(s,MesG(Ret(x)))
+  )
+  out = func(
+    StateMesOut(s,MesF(Out(Up(x)))), StateMesOut(SOut(s),Out(x))
+  )
+  reqCall = func(
+    StateMesOut(s,MesF(Out(Down(x)))), StateMesIn(s,MesG(Out(x)))
+  )
+  reqRet = func(
+    StateMesOut(s,MesG(Out(x))), StateMesIn(s,MesF(Out(Down(x))))
+  )
+  outLibF = func(
+    StateMesOut(s,MesF(Lib(k,x))), StateMesOut(SLibF(s),Lib(k,x))
+  )
+  outLibG = func(
+    StateMesOut(s,MesG(Lib(k,x))), StateMesOut(SLibG(s),Lib(k,x))
+  )
+  outMemF = func(
+    StateMesOut(s,MesF(Mem(k,x))), StateMesOut(SLibF(s),Mem(ForkF(k),x))
+  )
+  outMemG = func(
+    StateMesOut(s,MesG(Mem(k,x))), StateMesOut(SLibG(s),Mem(ForkG(k),x))
+  )
+  return listO(U(
+    listO(fg, [reqCall, reqRet]),
+    [out, outLibF, outLibG, outMemF, outMemG, inOutIter]
+  ), listO(
+    fg,
+    [in0, inS, inLibF, inLibG, inOutIter]
+  ))
+
 
 upRemap1 = [
   func(
@@ -141,7 +230,7 @@ def replaceMem(t, k):
     )(t)
   return t
 
-def comp(f, g):
+def compOld(f, g):
 #  g1 = listApply(downRemap1, g)
 #  g2 = listApply(downRemap2, g1)
 #  g3 = listApply(downRemap3, g2)
@@ -170,15 +259,20 @@ def iter_var(var_name):
 #    func(StateMes(c0, OutMes(x)), StateMes(c1, CallMes(var, StateMes(c0, OutMes(x))))),
 #    func(StateMes(c1, CallMes(var, StateMes(c0, OutMes(x)))), StateMes(c0, OutMes(x))),
 #  ])
-#  return IterItem([
-#    func(StateMes(s, OutMes(x)), StateMes(s, CallMes(var, StateMes(s, OutMes(x))))),
-#    func(StateMes(s, CallMes(var, StateMes(d, OutMes(x)))), StateMes(d, OutMes(x))),
-#  ])
   return IterItem([
-    func(StateMes(c0, OutMes(x)), StateMes(c1, CallMes(var, StateMes(c0, OutMes(x))))),
-    func(StateMes(VarState(s), OutMes(x)), StateMes(c1, CallMes(var, StateMes(s, OutMes(x))))),
-    func(StateMes(c1, CallMes(var, StateMes(d, OutMes(x)))), StateMes(VarState(d), OutMes(x))),
+    func(StateMesIn(c0, Out(x)), StateMesOut(c1, Lib(var, StateMesIn(c0, Out(x))))),
+    func(StateMesIn(VarState(s), Out(x)), StateMesOut(c1, Lib(var, StateMesIn(s, Out(x))))),
+    func(StateMesIn(c1, Ret(StateMesOut(d, Out(x)))), StateMesOut(VarState(d), Out(x))),
   ])
+  return IterItem([
+    func(StateMesIn(s, Out(x)), StateMesOut(s, Lib(var, StateMesIn(s, Out(x))))),
+    func(StateMesIn(s, Ret(StateMesOut(d, Out(x)))), StateMesOut(d, Out(x))),
+  ])
+#  return IterItem([
+#    func(StateMes(c0, OutMes(x)), StateMes(c1, CallMes(var, StateMes(c0, OutMes(x))))),
+#    func(StateMes(VarState(s), OutMes(x)), StateMes(c1, CallMes(var, StateMes(s, OutMes(x))))),
+#    func(StateMes(c1, CallMes(var, StateMes(d, OutMes(x)))), StateMes(VarState(d), OutMes(x))),
+#  ])
 
 class IterItem(list):
   def __call__(self, *args, no_tighten=False):

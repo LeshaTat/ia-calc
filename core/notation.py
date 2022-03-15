@@ -13,8 +13,17 @@ Iter = Func('Iter', 1)
 Input = Func('Input', 1)
 Output = Func('Output', 1)
 
-Ret = Func('Ret', 3)
 Run = Func('Run', 1)
+
+Ret = Func('Ret', 1)
+Out = Func('Out', 1)
+Up = Func('Up', 1)
+Down = Func('Down', 1)
+Lib = Func('Lib', 2)
+
+StateMesIn = Func("StateMesIn", 2)
+StateMesOut = Func("StateMesOut", 2)
+
 
 StateMes = Func('StateMes', 2)
 OutMes = Func('OutMes', 1)
@@ -29,7 +38,7 @@ IterUp = Func("IterUp", 2)
 IterDown = Func("IterDown", 2)
 State = Func("State", 1)
 
-Mem = Func("Mem", 1)
+Mem = Func("Mem", 2)
 cMem = Const("Mem")
 SetByAddrValue = Func("SetByAddrValue", 2)
 GetByAddr = Func("GetByAddr", 1)

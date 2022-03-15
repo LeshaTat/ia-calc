@@ -32,7 +32,7 @@ def printl(l):
 
 def breadth_first_search(f, cbk, s0=None, include_all=False):
   if s0 is None: s0 = c0
-  nxt = [(func(StateMes(s0, x), StateMes(s0, x)), [])]
+  nxt = [(func(StateMesIn(s0, x), StateMesIn(s0, x)), [])]
   used = []
   while nxt:
     cur = nxt
@@ -45,11 +45,11 @@ def breadth_first_search(f, cbk, s0=None, include_all=False):
         nPair = pair
         hNext = h
         if pair.isIn(used): continue
-        if n.isIn(StateMes(s, x)):
+        if n.isIn(StateMesOut(s, x)):
           if not cbk(nPair, h):
             continue
 #          hNext = hNext + [func(preN, n)]   
-          nX = func(StateMes(s, x), StateMes(s, y))(n)
+          nX = func(StateMesOut(s, x), StateMesIn(s, y))(n)
           nPair = func(nX, nX)
         else:
           if include_all:
