@@ -1,9 +1,8 @@
 from core.iterDebug import runOnSeq
+from core.iterProgStandard import callCbk
 from core.term import func, norm, Term, Func, Const, Var, termToStr
 from core.notation import *
 from core.iterAlgebra import comp, IterItem, iter_var
-from core.iterEq import automaton_diff, print_diff, backtrace_func_diff
-from core.iterExpr import automaton_expression
 from core.iterProg import *
 from core.iterDiffMem import DegException, breadth_first_search_diff_mem, test_print
 from core.iter import tighten, tighten_iter
@@ -14,54 +13,6 @@ def printl(l):
   for t in l:
     print(str(t.args[0])+' ->\n'+str(t.args[1])+'\n')
   print(']')
-
-def callCbk(ret, F, mes, cbk):
-  return lambda v: [
-#    Set(v('bugCbk'), Func('DebugIn3',3)(ret, mes, Const(str(F)))),
-    Call(ret, F, UpMes(mes)),
-#    Set(v('bugCbk'), Func('DebugOut3',3)(ret, mes, Const(str(F)))),
-    Branches([
-      [
-        Parse(DownMes(v('inner')), ret),
-        cbk(v('inner')),
-        Call(ret, F, DownMes(v('inner'))),
-        Back()
-      ],
-      [
-        Parse(UpMes(ret), ret),
-      ]
-    ])
-  ]
-
-SimPQ = program(
-  3,
-  lambda v, Z, A, Exec: [
-    Message(v('mes')),
-    callCbk(v('mes'), Z, v('mes'), lambda m: [
-      Branches([
-        [
-          Parse(UserMes(v('zMes')), m),
-          Call(m, Exec, UserMes(v('zMes')))
-        ],
-        [
-          Parse(SystemMes(v('zMes')), m),
-          Call(v('tmp'), Exec, SystemMes(v('zMes'))),
-          callCbk(m, A, SystemMes(v('zMes')), lambda mA: Call(mA, Exec, AdvMes(mA)))
-        ],
-        [
-          Parse(AdvMes(v('zMes')), m),
-#          Set(v('bug1'), Func('Debug1',2)(m, v('zMes'))),
-#          Call(m, A, AdvMes(v('zMes')))
-          callCbk(m, A, m, lambda mA: [
-#            Set(v('bug2'), Func('Debug2',1)(mA)),
-            Call(mA, Exec, AdvMes(mA))
-          ])
-        ]      
-      ])
-    ]),
-    Return(v('mes'))
-  ], print_desc=True
-)
 
 def callPT1(P, Exec, mGet, mSend):
   return lambda v: [
@@ -92,7 +43,6 @@ T1 = program(
       ],
       [
         Parse(AdvMes(ToP(MesForQ(v('mes')))), v('mes')),
-        Set(v('bug_original'), Func('DebugMesForQ', 1)(v('mes'))),
         Call(v('mes'), Exec, AdvMes(ToP(v('mes'))))
       ],
       [
@@ -206,26 +156,6 @@ Q = iter_var('Q')
 SP = iter_var('SP')
 SQ = iter_var('SQ')
 
-#Dbg = tighten(
-#  AdvZ.tighten()(Z, A)(
-#Dbg = AdvZ(Z, A, no_tighten=True)(
-#    Exec(DummyAdv, N, no_tighten=True), 
-#    no_tighten=True
-#  )#, include_all=True)
-#printl()
-
-#Dbg = Exec(DummyAdv, Net(UComp(P, Q, no_tighten=True), H, no_tighten=True), no_tighten=True)
-
-#runOnSeq(Dbg, [
-#  OutMes(SystemMes(x))
-#  CallMes(Const("var_Z"), StateMes(x, OutMes(DownMes(AdvMes(y))))),
-#  CallMes(Const("var_A"), StateMes(x, OutMes(DownMes(y))))
-#])
-
-#print('+++++++++++++')
-
-#exit(0)
-
 
 T1 = T1.tighten()
 T2 = T2.tighten()
@@ -235,34 +165,17 @@ Net = Net.tighten()
 UComp = UComp.tighten()
 DummyAdv = DummyAdv.tighten()
 
-#print(len(Exec(DummyAdv, Net(UComp(P, Q), H))))
-
-""" try:
-except DegException as e:
-  t_start =  e.start[0].term()
-  h = e.start[1]
-  mode = t_start.args[0]
-  if mode==c1:
-    print('C1')
-  else:
-    print('C3')
-  runOnSeq(
-    Exec(DummyAdv, Net(UComp(P, Q, no_tighten=True), H, no_tighten=True), no_tighten=True), 
-    e.call_history
-  )
- """
-
 breadth_first_search_diff_mem(
   Exec(DummyAdv, Net(UComp(P, Q), H)), 
-  T1(P, Exec(DummyAdv, Net(Q, H)))
+  T1(P)(Exec(DummyAdv, Net(Q, H)))
 )
 
 breadth_first_search_diff_mem(
-  T1(P, Exec(SQ, Net(DummyP, G))),
-  T2(SQ, Exec(DummyAdv, Net(P, G)))
+  T1(P)(Exec(SQ, Net(DummyP, G))),
+  T2(SQ)(Exec(DummyAdv, Net(P, G)))
 )
 
 breadth_first_search_diff_mem(
-  T2(SQ, Exec(SP, Net(DummyP, F))),
+  T2(SQ)(Exec(SP, Net(DummyP, F))),
   Exec(SPQ(SP, SQ), Net(DummyP, F))
 )

@@ -1,3 +1,4 @@
+from core.iterProgStandard import callCbk
 from core.term import func, norm, Term, Func, Const, Var, termToStr
 from core.notation import *
 from core.iterProg import *
@@ -24,28 +25,10 @@ ToP = Func("ToP", 1)
 ToF = Func("ToF", 1)
 ToA = Func("ToA", 1)
 
-def callCbk(ret, F, mes, cbk):
-  return lambda v: [
-    Call(ret, F, UpMes(mes)),
-    Branches([
-      [
-        Parse(DownMes(v('inner')), ret),
-        cbk(v('inner')),
-        Call(ret, F, DownMes(v('inner'))),
-        Back()
-      ],
-      [
-        Parse(UpMes(ret), ret),
-      ]
-    ])
-  ]
-
-
 Exec = program(
   2,
   lambda v, A, Net: [
     Message(v('mes')),
-#    Set(v('bug_original_input'), Func('DebugInputOriginal', 1)(v('mes'))),
     Branches([
       [
         Parse(UserMes(v('mes')), v('mes')),
@@ -53,8 +36,6 @@ Exec = program(
       ],
       [
         Parse(SystemMes(v('mes')), v('mes')),
-        #TODO: Reenable corrupt
-        #Stop(),
         Call(c0, Net, FromZ(SystemMes(v('mes')))),
         callCbk(v('ret'), A, SystemMes(v('mes')), lambda m: [
           Call(m, Net, FromA(m))
@@ -64,9 +45,7 @@ Exec = program(
       ],
       [
         Parse(AdvMes(v('mes')), v('mes')),
-#        Set(v('bug_original'), Func('DebugAdvInput', 1)(v('mes'))),
         callCbk(v('mes'), A, AdvMes(v('mes')), lambda m: [
-#          Set(v('bug_original'), Func('DebugOriginal2', 1)(m)),
           Call(m, Net, FromA(m))
         ])
       ]
@@ -96,7 +75,6 @@ Net = program(
   2,
   lambda v, P, F: [
     Message(v("mes")),
-#    Set(v('bug_original'), Func('ExecSystemMes', 1)(v('mes'))),
     Branches([
       [
         Parse(FromZ(UserMes(v('mes'))), v('mes')),
@@ -105,15 +83,12 @@ Net = program(
         ])
       ], [
         Parse(FromZ(SystemMes(v('mes'))), v('mes')),
-        #TODO: Reenable corrupt
-#        Stop(),
         callCbk(v('ret'), P, FromZ(SystemMes(v('mes'))), lambda m: Stop()),#Call(m, F, FromP(m))),
         Test(v('ret'), c0),
         Call(c0, F, FromZ(SystemMes(v('mes')))),
         Set(v('mes'), c0)
       ], [
         Parse(FromA(ToP(v('mes'))), v('mes')),
-#        Call(c0, Const("Debug"), v("mes")),
         callCbk(v('mes'), P, FromA(v('mes')), lambda m: Call(m, F, FromP(m)))
       ], [
         Parse(FromA(ToF(v('mes'))), v('mes')),
