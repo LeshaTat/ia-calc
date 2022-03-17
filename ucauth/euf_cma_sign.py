@@ -1,3 +1,4 @@
+from core.iterProgStandard import lib, mem
 from core.term import func, norm, Term, Func, Const, Var, termToStr
 from core.notation import *
 from core.iterProg import *
@@ -35,12 +36,12 @@ MemSignedSidKey = Func('MemSignedSidKey', 2)
 
 def getKeyPairByPid(pk, sk, pid):
   return lambda v: [
-    Call(v('ret'), Mem(MemKeyPair), GetByAddr(pid)),
+    mem(v('ret'), MemKeyPair, GetByAddr(pid)),
     Branches([
       [
         Test(v('ret'), c0),
-        Call(v('ret'), SignKeyGen, c0),
-        Call(c0, Mem(MemKeyPair), SetByAddrValue(pid, v('ret'))),
+        lib(v('ret'), SignKeyGen, c0),
+        mem(c0, MemKeyPair, SetByAddrValue(pid, v('ret'))),
         Parse(SignKeyPair(pk, sk), v('ret'))
       ], [
         Parse(SignKeyPair(pk, sk), v('ret'))
@@ -50,7 +51,7 @@ def getKeyPairByPid(pk, sk, pid):
 
 def getKeyPairByPidNoGen(pk, sk, pid):
   return lambda v: [
-    Call(v('ret'), Mem(MemKeyPair), GetByAddr(pid)),
+    mem(v('ret'), MemKeyPair, GetByAddr(pid)),
     Branches([
       [
         Test(v('ret'), c0),
@@ -75,9 +76,9 @@ GameSignBase = lambda ideal: program(
       [
         Parse(GameSign(v('pid'), v('sid'), v('m')), v('mes')),
         getKeyPairByPidNoGen(v('pk'), v('sk'), v('pid')),
-        Call(
+        mem(
           v('signed'), 
-          Mem(MemSignedSid), 
+          MemSignedSid,
           GetByAddr(
             MemSignedSidKey(v('pid'), v('sid')),
           )
@@ -90,18 +91,18 @@ GameSignBase = lambda ideal: program(
             Test(v('signed'), c0)
           ]
         ]),
-        Call(v('sig'), SignMakeSign, SignMakeSignArg(v('sk'), SidMes(v('sid'), v('m')))),
-        Call(
+        lib(v('sig'), SignMakeSign, SignMakeSignArg(v('sk'), SidMes(v('sid'), v('m')))),
+        mem(
           c0, 
-          Mem(MemSigned), 
+          MemSigned,
           SetByAddrValue(
             MemSignedKey(v('pid'), v('sid'), v('m')),
             c1
           )
         ),
-        Call(
+        mem(
           c0, 
-          Mem(MemSignedSid), 
+          MemSignedSid, 
           SetByAddrValue(
             MemSignedSidKey(v('pid'), v('sid')),
             MemSignedSidVal(v('m'))
@@ -111,9 +112,9 @@ GameSignBase = lambda ideal: program(
       ],
       [
         Parse(GameSignedSid(v('sid'), v('pid')), v('mes')),
-        Call(
+        mem(
           v('signed'), 
-          Mem(MemSignedSid), 
+          MemSignedSid,
           GetByAddr(
             MemSignedSidKey(v('pid'), v('sid')),
           )
@@ -123,7 +124,7 @@ GameSignBase = lambda ideal: program(
       [
         Parse(GameVerify(v('pid'), v('sid'), v('m'), v('sig')), v('mes')),
         getKeyPairByPidNoGen(v('pk'), v('sk'), v('pid')),
-        Call(v('ret'), SignVerify, SignVerifyArgs(SidMes(v('sid'), v('m')), v('pk'), v('sig'))),
+        lib(v('ret'), SignVerify, SignVerifyArgs(SidMes(v('sid'), v('m')), v('pk'), v('sig'))),
         Branches([
           [
             Test(v('ret'), c0),
@@ -137,8 +138,8 @@ GameSignBase = lambda ideal: program(
           Branches([
             [
               Test(v('ret'), VerifiedMes(v('m'))),
-              Call(c0, Mem(MemSigned), SetByAddrValue(MemSignedKey(v('pid'), v('sid'), v('m')), c1)),
-              Call(v('m'), Mem(MemSignedSid), GetByAddr(MemSignedSidKey(v('pid'), v('sid')))),
+              mem(c0, MemSigned, SetByAddrValue(MemSignedKey(v('pid'), v('sid'), v('m')), c1)),
+              mem(v('m'), MemSignedSid, GetByAddr(MemSignedSidKey(v('pid'), v('sid')))),
               Parse(MemSignedSidVal(v('m')), v('m')),
               Return(VerifiedMes(v('m')))
             ], [

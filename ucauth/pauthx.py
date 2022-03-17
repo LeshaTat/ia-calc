@@ -1,3 +1,4 @@
+from core.iterProgStandard import lib
 from core.term import func, norm, Term, Func, Const, Var, termToStr
 from core.notation import *
 from core.iterProg import *
@@ -32,7 +33,7 @@ PAuthX = program(
             Return(c0)
           ]
         ]),
-        Call(v('pk'), SignLib, GameKeyGen(v('pid'))),
+        lib(v('pk'), SignLib, GameKeyGen(v('pid'))),
         Call(v('x'), F_CA, SidMes(c0, RegisterReq(v('pk')))),
         Call(c0, LocMem, LocalSetByAddrValue(MemReg, c0, RegisteredX)),
         Return(c0)
@@ -47,6 +48,7 @@ PAuthX = program(
           v('mes')
         ),
         Call(v('mem'), LocMem, LocalGetByAddr(MemSend, v('sid'))),
+#        lib(c0, Const("Debug"), v('mem')),
         Branches([
           [
             Parse(NotSignedMes(v('mes')), v('mem')),
@@ -87,7 +89,7 @@ PAuthX = program(
                 Return(c0)
               ]
             ]),
-            Call(v('sign'), SignLib, GameSign(v('pid'), v('sid'), v('m'))),        
+            lib(v('sign'), SignLib, GameSign(v('pid'), v('sid'), v('m'))),        
             Call(c0, LocMem, LocalSetByAddrValue(MemSend, v('sid'), SignedMes(v('m'), v('sign')))),
           ], [
             Test(v('send_state'), c0),
@@ -130,8 +132,7 @@ PAuthX = program(
             Parse(Retrieved(RegisteredVal(v('pk'))), v('ca_val'))
           ]
         ]),
-        Call(v('ver'), SignLib, GameVerify(v('pid'), v('sid'), v('m'), v('sig'))),
-        Call(c0, Const("Debug"), VerifiedMes(v('ver'))),
+        lib(v('ver'), SignLib, GameVerify(v('pid'), v('sid'), v('m'), v('sig'))),
         Branches([
           [
             Parse(VerifiedMes(v('m')), v('ver'))
@@ -140,7 +141,6 @@ PAuthX = program(
             Return(c0)
           ]
         ]),
-        Call(c0, Const("Debug"), Const('Here')),
         Call(
           c0, LocMem, 
           LocalSetByAddrValue(MemRecv, SidPid(v('sid'), v('pid')), AuthedMes(v('m')))

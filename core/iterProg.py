@@ -262,7 +262,10 @@ class Call(ProgOperator):
         a = self.v
       ar.append(
         func(
-          StateMesIn(ctx.makePosVarsInp(lineFrom), Ret(a)),
+          StateMesIn(
+            ctx.makePosVarsInp(lineFrom), 
+            LibRet(self.func, a) if not self.mem else MemRet(a)
+          ),
           Iter(ctx.makePosVarsInp(lineTo, d))
         )
       )

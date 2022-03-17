@@ -1,3 +1,4 @@
+from core.iterProgStandard import mem
 from core.term import func, norm, Term, Func, Const, Var, termToStr, ID
 from core.notation import *
 from core.iterProg import *
@@ -38,11 +39,11 @@ F_CA = program(
     Branches([
       [
         Parse(FromP(PidMes(v('pid'), c0, RegisterReq(v('v')))), v('mes')),
-        Call(v('memReg'), Mem(MemCAReg), GetByAddr(v('pid'))),
+        mem(v('memReg'), MemCAReg, GetByAddr(v('pid'))),
         Branches([
           [
             Test(v('memReg'), c0),
-            Call(c0, Mem(MemCAReg), SetByAddrValue(v('pid'), RegReq(v('v')))),
+            mem(c0, MemCAReg, SetByAddrValue(v('pid'), RegReq(v('v')))),
             Return(c0)
           ], [
             Parse(RegReq(v('x')), v('memReg')),
@@ -55,12 +56,12 @@ F_CA = program(
       ],
       [
         Parse(FromA(AdvRegisterGrant(v('pid'))), v('mes')),
-        Call(v('mem'), Mem(MemCAReg), GetByAddr(v('pid'))),
+        mem(v('mem'), MemCAReg, GetByAddr(v('pid'))),
         Branches([
           [
             Parse(RegReq(v('v')), v('mem')),
-            Call(c0, Mem(MemCA), SetByAddrValue(v('pid'), RegisteredVal(v('v')))),
-            Call(c0, Mem(MemCAReg), SetByAddrValue(v('pid'), Registered)),
+            mem(c0, MemCA, SetByAddrValue(v('pid'), RegisteredVal(v('v')))),
+            mem(c0, MemCAReg, SetByAddrValue(v('pid'), Registered)),
             Return(c0)
           ],
           [
@@ -74,11 +75,11 @@ F_CA = program(
       ],
       [
         Parse(FromP(PidMes(v('pid'), c0, RetrieveReq(v('pid2')))), v('mes')),
-        Call(v('memRet'), Mem(MemCARet), GetByAddr(RetReq(v('pid'), v('pid2')))),
+        mem(v('memRet'), MemCARet, GetByAddr(RetReq(v('pid'), v('pid2')))),
         Branches([
           [
             Test(v('memRet'), c0),
-            Call(c0, Mem(MemCARet), SetByAddrValue(RetReq(v('pid'), v('pid2')), RetrieveRequested)),
+            mem(c0, MemCARet, SetByAddrValue(RetReq(v('pid'), v('pid2')), RetrieveRequested)),
             Return(c0)
           ], [
             Test(v('memRet'), RetrieveRequested),
@@ -98,11 +99,11 @@ F_CA = program(
 #      ], 
       [
         Parse(FromA(AdvRetrieveGrant(v('pid'), v('pid2'))), v('mes')),
-        Call(v('memRet'), Mem(MemCARet), GetByAddr(RetReq(v('pid'), v('pid2')))),
+        mem(v('memRet'), MemCARet, GetByAddr(RetReq(v('pid'), v('pid2')))),
         Branches([
           [
             Test(v('memRet'), RetrieveRequested),
-            Call(c0, Mem(MemCARet), SetByAddrValue(RetReq(v('pid'), v('pid2')), RetrieveGranted)),
+            mem(c0, MemCARet, SetByAddrValue(RetReq(v('pid'), v('pid2')), RetrieveGranted)),
             Return(c0)
           ], [
             Test(v('memRet'), RetrieveGranted),
@@ -115,11 +116,11 @@ F_CA = program(
       ], 
       [
         Parse(FromP(PidMes(v('pid'), c0, RetrieveGet(v('pid2')))), v('mes')),
-        Call(v('memRet'), Mem(MemCARet), GetByAddr(RetReq(v('pid'), v('pid2')))),
+        mem(v('memRet'), MemCARet, GetByAddr(RetReq(v('pid'), v('pid2')))),
         Branches([
           [
             Parse(RetrieveGranted, v('memRet')),
-            Call(v('mem'), Mem(MemCA), GetByAddr(v('pid2'))),
+            mem(v('mem'), MemCA, GetByAddr(v('pid2'))),
             Return(Retrieved(v('mem')))
           ], [
             Parse(RetrieveRequested, v('memRet')),

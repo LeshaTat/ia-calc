@@ -15,7 +15,8 @@ Output = Func('Output', 1)
 
 Run = Func('Run', 1)
 
-Ret = Func('Ret', 1)
+LibRet = Func('LibRet', 2)
+MemRet = Func('MemRet', 1)
 Out = Func('Out', 1)
 Up = Func('Up', 1)
 Down = Func('Down', 1)

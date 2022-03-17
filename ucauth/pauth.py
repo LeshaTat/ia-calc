@@ -1,3 +1,4 @@
+from core.iterProgStandard import lib
 from core.term import func, norm, Term, Func, Const, Var, termToStr
 from core.notation import *
 from core.iterProg import *
@@ -40,11 +41,10 @@ PAuth = program(
             Return(c0)
           ]
         ]),
-        Call(v('keys'), SignKeyGen, c0),
+        lib(v('keys'), SignKeyGen, c0),
         Parse(SignKeyPair(v('pk'), v('sk')), v('keys')),
         Call(v('x'), F_CA, SidMes(c0, RegisterReq(v('pk')))),
         Call(c0, LocMem, LocalSetByAddrValue(MemReg, c0, Registered(v('sk')))),
-#        Call(c0, Const('DEBUG_PAUTH'), c0),
         Return(c0)
       ], [
         Parse(
@@ -97,7 +97,7 @@ PAuth = program(
                 Return(c0)
               ]
             ]),
-            Call(v('sign'), SignMakeSign, SignMakeSignArg(v('sk'), SidMes(v('sid'), v('m')))),        
+            lib(v('sign'), SignMakeSign, SignMakeSignArg(v('sk'), SidMes(v('sid'), v('m')))),        
             Call(c0, LocMem, LocalSetByAddrValue(MemSend, v('sid'), SignedMes(v('m'), v('sign')))),
           ], [
             Test(v('send_state'), c0),
@@ -128,7 +128,6 @@ PAuth = program(
           ), 
           v('mes')
         ),
-#        Call(c0, Debug, c0),
         Call(v('ca_val'), F_CA, SidMes(c0, RetrieveGet(v('pid')))),
         Branches([
           [
@@ -141,7 +140,7 @@ PAuth = program(
             Parse(Retrieved(RegisteredVal(v('pk'))), v('ca_val'))
           ]
         ]),
-        Call(v('ver'), SignVerify, SignVerifyArgs(SidMes(v('sid'), v('m')), v('pk'), v('sig'))),
+        lib(v('ver'), SignVerify, SignVerifyArgs(SidMes(v('sid'), v('m')), v('pk'), v('sig'))),
         Branches([
           [
             Test(v('ver'), c1)            

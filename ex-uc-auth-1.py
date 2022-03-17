@@ -4,13 +4,12 @@ from core.iterMap2 import Partition
 from core.term import func, norm, Term, Func, Const, Var, termToStr
 from core.notation import *
 from core.iterAlgebra import comp, IterItem, iter_var
-from core.iterEq import automaton_diff, print_diff, backtrace_func_diff
-from core.iterExpr import automaton_expression
 from core.iterProg import *
 from core.iterDiffMem import mode1, mode3, DegException, breadth_first_search_diff_mem, test_print
 from core.iter import tighten, tighten_iter
+from core.log import Dumper
 from uc.ucnet import DummyP, Exec, DummyAdv, FromA, FromZ, MesForP, MesForQ, Net, PidMes, SystemMes, ToF, ToP, UComp, UserMes, AdvMes
-from uc.ucshell import LocalInd, PidAddr, Shell, ShellF, cSystem
+from uc.ucshell import LocalInd, PidAddr, Shell, cSystem
 from ucauth.euf_cma_sign import GameSignReal, MemSignedKey, MemSignedSidKey
 from ucauth.F_CA import F_CA, RetReq
 from ucauth.F_auth import F_Auth
@@ -61,8 +60,7 @@ print('Net tightened')
 Exec = ctighten(Exec)
 print('Exec tightened')
 
-ShellReal = ctighten(Shell(PAuthMemInds, False))
-ShellDebug = ctighten(Shell(PAuthMemInds, True))
+ShellReal = ctighten(Shell(PAuthMemInds))
 print('Shell tightened')
 
 #ShellF = ShellF.tighten()
@@ -92,7 +90,7 @@ print('Real Model tighten')
 print(len(RealModel))
 
 PAuthX = ctighten(PAuthX)
-PShellAuthX = ctighten(ShellDebug(PAuthX, no_tighten=True))
+PShellAuthX = ctighten(ShellReal(PAuthX, no_tighten=True))
 print('PAuthX shelled')
 #printl(PShellAuth)
 #print(len(PShellAuthX), len(PShellAuth))
@@ -136,7 +134,7 @@ v_pid = Var('pid')
 v_sid = Var('sid')
 v_pid2 = Var('pid2')
 v_m = Var('m')
-def check_message_sent(n, h, hf):
+def check_message_sent(n, h, hf, is_last=False):
   printlt(hf)
   print(n.term().args[2].args[1])
   pass
@@ -155,7 +153,8 @@ try:
   ])
   if True:
     breadth_first_search_diff_mem(RealModel, RealModelXReal,
-      cbk=check_message_sent,
+      cbk=Dumper("dumps/uc-auth-addsignlib.txt"),
+#      cbk=check_message_sent,
       partition=partition
     )
   else:
@@ -168,7 +167,7 @@ except DegException as e:
     print('C1')
   else:
     print('C3')
-  runOnSeq(RealModelXReal if mode == mode1 else RealModel, e.call_history)
+#  runOnSeq(RealModelXReal if mode == mode1 else RealModel, e.call_history)
       
 #  Exec(DummyAdv, Net(PAuth, F_CA)), 
 #  Exec(DummyAdv, Net(PAuth, F_CA)),

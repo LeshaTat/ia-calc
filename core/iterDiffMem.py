@@ -59,21 +59,21 @@ changeC3  = MapModel.extendFunc(func(
 Debug = Const('Debug')
 changeDebug0  = MapModel.extendFunc(func(
   cortege(d, q, StateMesOut(s, Lib(Debug, x)), y, b),
-  cortege(d, q, StateMesIn(s, Ret(c0)), y, b)
+  cortege(d, q, StateMesIn(s, LibRet(Debug, c0)), y, b)
 ))
 changeDebug1  = MapModel.extendFunc(func(
   cortege(d, q, x, StateMesOut(s, Lib(Debug, y)), b),
-  cortege(d, q, x, StateMesIn(s, Ret(c0)), y)
+  cortege(d, q, x, StateMesIn(s, LibRet(Debug, c0)), y)
 ))
 
-response_mem_f = lambda v: MapModel.extendFunc(func(
-  cortege(d, q, StateMesOut(s, Mem(x, y)), a, b),
-  cortege(d, q, StateMesIn(s, Ret(v)), a, Ret(v))
+response_mem_f = MapModel.extendFunc(func(
+  cortege(d, q, StateMesOut(s, MemRet(z)), a, b),
+  cortege(d, q, StateMesIn(s, MemRet(z)), a, b)#MemRet(v))
 ))
 
-response_mem_g = lambda v: MapModel.extendFunc(func(
-  cortege(d, q, a, StateMesOut(s, Mem(x, y)), b),
-  cortege(d, q, a, StateMesIn(s, Ret(v)), Ret(v))
+response_mem_g = MapModel.extendFunc(func(
+  cortege(d, q, a, StateMesOut(s, MemRet(z)), b),
+  cortege(d, q, a, StateMesIn(s, MemRet(z)), b)#MemRet(v))
 ))
 
 def printl(l):
@@ -286,10 +286,10 @@ def breadth_first_search_diff_mem(f, g, cbk=None, partition=None):
                   n_mem.put_key_val_by_ind(ind, addr, val)
                   val = c0
                 hNextMem = hNextMem + [n_mem]
-                n_mem_v = n_mem.applyTerm(response_mem_f(val), save_f_applied=True)
-#                n_mem.replace_term([2,1], Ret(val))
+                nhf = hf + [pair(n_mem.term().args[2].args[1], arg)]   
+                n_mem.replace_term([2,1], MemRet(val))                
+                n_mem_v = n_mem.applyTerm(response_mem_f, save_f_applied=True)
                 hNextMem = hNextMem + [n_mem_v]   
-                nhf = hf + [pair(n_mem_v.term().args[2].args[1], arg)]   
                 added_cur = add_nxt(StateModel(n_mem_v, h, nhf, hg, deg), add=True)
                 added = added or added_cur
               if cbk is not None and not added:
@@ -313,9 +313,10 @@ def breadth_first_search_diff_mem(f, g, cbk=None, partition=None):
                   n_mem.put_key_val_by_ind(ind, addr, val)
                   val = c0
                 hNextMem = hNextMem + [n_mem]
-                n_mem_v = n_mem.applyTerm(response_mem_g(val), save_f_applied=True)
-#                n_mem.replace_term([3,1], Ret(val))
-                nhg = hg + [pair(n_mem_v.term().args[3].args[1], arg)]   
+#                print("Mem "+str(addr)+" -> "+str(val))
+                nhg = hg + [pair(n_mem.term().args[3].args[1], arg)]   
+                n_mem.replace_term([3,1], MemRet(val))
+                n_mem_v = n_mem.applyTerm(response_mem_g, save_f_applied=True)
                 hNextMem = hNextMem + [n_mem_v]   
                 added = add_nxt(StateModel(n_mem_v, h, hf, nhg, deg), add=True)
                 added = added or added_cur

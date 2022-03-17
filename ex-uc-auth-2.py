@@ -1,16 +1,15 @@
 from core.iterDebug import runOnSeq
 from core.iterExtract import lib_call_to_comp
 from core.iterMap2 import Partition
+from core.log import Dumper
 from core.term import func, norm, Term, Func, Const, Var, termToStr
 from core.notation import *
 from core.iterAlgebra import comp, IterItem, iter_var
-from core.iterEq import automaton_diff, print_diff, backtrace_func_diff
-from core.iterExpr import automaton_expression
 from core.iterProg import *
 from core.iterDiffMem import mode1, mode3, DegException, breadth_first_search_diff_mem, test_print
 from core.iter import tighten, tighten_iter
 from uc.ucnet import DummyP, Exec, DummyAdv, FromA, FromZ, MesForP, MesForQ, Net, PidMes, SystemMes, ToF, ToP, UComp, UserMes, AdvMes
-from uc.ucshell import LocalInd, PidAddr, Shell, ShellF, cSystem
+from uc.ucshell import LocalInd, PidAddr, Shell, cSystem
 from ucauth.F_authx import F_AuthX
 from ucauth.euf_cma_sign import ExtIdentity, GameSignIdeal, GameSignReal, MemSignedKey, MemSignedSidKey
 from ucauth.F_CA import F_CA, RetReq
@@ -63,38 +62,35 @@ print('Net tightened')
 Exec = ctighten(Exec)
 print('Exec tightened')
 
-ShellReal = ctighten(Shell(PAuthMemInds, False))
-ShellDebug = ctighten(Shell(PAuthMemInds, True))
+ShellReal = ctighten(Shell(PAuthMemInds))
 print('Shell tightened')
 
 #ShellF = ShellF.tighten()
 #print('ShellF tightened')
 
-PAuth = ctighten(PAuth)
-print('PAuth tightened')
+#PAuth = ctighten(PAuth)
+#print('PAuth tightened')
 
 F_CA = F_CA#ShellF(F_CA).tighten()
 F_Auth = ctighten(F_Auth)
 print('F_CA and F_Auth shelled')
 
-PShellAuth = ctighten(ShellReal(PAuth, no_tighten=True))
-print('PAuth shelled')
+#PShellAuth = ctighten(ShellReal(PAuth, no_tighten=True))
+#print('PAuth shelled')
 
-NetReal = ctighten(Net(PShellAuth, F_CA, no_tighten=True))
-print('Net shelled')
+#NetReal = ctighten(Net(PShellAuth, F_CA, no_tighten=True))
+#print('Net shelled')
 #printl(NetReal)
 #Net(PAuth, F_CA, no_tighten=True)
 
-T1 = ctighten(Exec(DummyAdv, no_tighten=True))
-print('Exec 1 tighten')
 
-RealModel = ctighten(T1(NetReal, no_tighten=True))
-print('Real Model tighten')
+#RealModel = ctighten(T1(NetReal, no_tighten=True))
+#print('Real Model tighten')
 
-print(len(RealModel))
+#print(len(RealModel))
 
 PAuthX = ctighten(PAuthX)
-PShellAuthX = ctighten(ShellDebug(PAuthX, no_tighten=True))
+PShellAuthX = ctighten(ShellReal(PAuthX, no_tighten=True))
 print('PAuthX shelled')
 #printl(PShellAuth)
 #print(len(PShellAuthX), len(PShellAuth))
@@ -107,11 +103,14 @@ NetX = ctighten(Net(PShellAuthX, F_CA, no_tighten=True))
 print('NetX shelled')
 #Net(PAuth, F_CA, no_tighten=True)
 
+T1 = ctighten(Exec(DummyAdv, no_tighten=True))
+print('Exec 1 tighten')
+
 RealModelX = ctighten(T1(NetX, no_tighten=True))
 print('Real ModelX tighten')
 
 RealModelXIdeal = ctighten(lib_call_to_comp(RealModelX, SignLib)(GameSignIdeal, no_tighten=True))
-#RealModelXReal = RealModelX
+RealModelXReal = RealModelX
 print('Real ModelXIdeal tighten')
 
 #lib_call_to_comp(NetXReal, SignLib)(GameSignReal, no_tighten=True)
@@ -181,7 +180,7 @@ v_m = Var('m')
 #  CallMes(Mem((c0, (c0, (c1, (c1, (c0, (c1, (c0, LocalInd(Const('MemReg')))))))))), c0),
 #  CallMes(Const('Debug'), c0)
 #])
-def check_message_sent(n, h, hf):
+def check_message_sent(n, h, hf, is_last=False):
   printlt(hf)
   print(n.term().args[2].args[1])
   pass
@@ -204,13 +203,13 @@ try:
   if True:
 #    pass
     breadth_first_search_diff_mem(SimModelIdeal, SimModelAXIdeal,
-      cbk=check_message_sent,
+      cbk=Dumper("dumps/uc-auth-sim-simx.txt"),
       partition=partition
     )
-#    breadth_first_search_diff_mem(RealModelXIdeal, SimModelAXIdeal,
-#      cbk=check_message_sent,
-#      partition=partition
-#    )
+    breadth_first_search_diff_mem(RealModelXIdeal, SimModelAXIdeal,
+      cbk=Dumper("dumps/uc-auth-simx-realx.txt"),
+      partition=partition
+    )
 #    breadth_first_search_diff_mem(RealModelXReal, SimModel,
 #      cbk=check_message_sent,
 #      partition=partition

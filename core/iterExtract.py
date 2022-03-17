@@ -6,23 +6,22 @@ s = Var('s')
 x = Var('x')
 z = Var('z')
 
-
 def lib_call_to_comp_op(it, name):
   it = func(
-    func(z, StateMes(s, OutMes(x))),
-    func(z, StateMes(s, OutMes(UpMes(x))))
+    func(z, StateMesOut(s, Out(x))),
+    func(z, StateMesOut(s, Out(Up(x))))
   ).applyGently(it)
   it = func(
-    func(StateMes(s, OutMes(x)), z),
-    func(StateMes(s, OutMes(UpMes(x))), z)
+    func(StateMesIn(s, Out(x)), z),
+    func(StateMesIn(s, Out(Up(x))), z)
   ).applyGently(it)
   it = func(
-    func(z, StateMes(s, CallMes(name, x))),
-    func(z, StateMes(s, OutMes(DownMes(x))))
+    func(z, StateMesOut(s, Lib(name, x))),
+    func(z, StateMesOut(s, Out(Down(x))))
   ).applyGently(it)
   it = func(
-    func(StateMes(s, CallMes(name, x)), z),
-    func(StateMes(s, OutMes(DownMes(x))), z)
+    func(StateMesIn(s, LibRet(name, x)), z),
+    func(StateMesIn(s, Out(Down(x))), z)
   ).applyGently(it)
   return it
 
