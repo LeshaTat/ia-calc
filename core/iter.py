@@ -30,6 +30,53 @@ def printl(l):
   print(']')
 
 
+
+class FrameExtractor:
+  def __init__(self):
+    self.ind = 0
+    self.v = {}
+    self.vars = []
+    self.varsInds = {}
+    self.frame = []
+  def extractVars(self, t):
+    vs = {}
+    t.fillVars(vs=vs)
+    self.vars = tuple(sorted([k for k in vs]))
+    for i, k in enumerate(self.vars):
+      self.varsInds[k.name] = i
+  def getVars(self):
+    return self.vars
+  def makeFrame(self, t):
+    if t.isVar:
+      return cN(self.varsInds[t.name])
+    if t.isConst:
+      return Const(t.s)
+    return Func(t.name)(*[self.makeFrame(arg) for arg in t.args])
+
+def makeFrameNoDupl(t):
+  extractor = FrameExtractor()
+  extractor.extractVars(t)
+  return (extractor.makeFrame(t), extractor.getVars())
+  if t.isVar:
+    vl.append(t)
+    return Const("v"+str(len(vl)))
+  if t.isConst:
+    return Const(t.s)
+  return Func(t.name)(*[makeFrame(arg, vl) for arg in t.args])
+
+def makeFrameDuplVars(t, vl):
+  if t.isVar:
+    vl.append(t)
+    return Const("v"+str(len(vl)))
+  if t.isConst:
+    return Const(t.s)
+  return Func(t.name)(*[makeFrameDuplVars(arg, vl) for arg in t.args])
+
+def makeFrame(t):
+  vl = []
+  frame = makeFrameDuplVars(t, vl)
+  return (frame, vl)
+
 def breadth_first_search(f, cbk, s0=None, include_all=False):
   if s0 is None: s0 = c0
   nxt = [(func(StateMesIn(s0, x), StateMesIn(s0, x)), [])]
@@ -60,22 +107,55 @@ def breadth_first_search(f, cbk, s0=None, include_all=False):
 
 def isFIn(t1, t2):
   return t1.args[0].groupID==t2.args[0].groupID and t1.args[0].isIn(t2.args[0])
+#  return t1.args[0].isIn(t2.args[0])
 
-def appendPair(pair, nn):
-  n = nn.get(pair.args[0].groupID, [])
-  n = [el for el in n if not isFIn(el, pair)]
-  if not any(isFIn(pair, el) for el in n):
-    n.append(pair)
-  else:
-    return False
-  nn[pair.args[0].groupID] = n
-  return True
+Short = Func("Short",2)
+
+class Appender:
+  def __init__(self):
+    self.nn = {}
+    self.ci = 0
+    self.consts = {}
+
+  def getConst(self, s):
+    if s not in self.consts:
+      self.ci = self.ci+1
+      self.consts[s] = ID(cN(self.ci))
+    return self.consts[s]
+
+  def appendPair(self, pair):
+    s_from = pair.args[0].args[0]
+    s_to = pair.args[1].args[0]
+    v_from = []
+    v_to = []
+
+#    print(pair)
+    if False and s_from!=c0:
+      (frame, v_from) = makeFrame(s_from)
+      ns_from = Short(self.getConst(str(frame)), cortege(*v_from))
+      pair = pair.replace([0, 0], ns_from)
+
+    if False and s_to!=c0:
+      (frame, v_to) = makeFrame(s_to)
+      ns_to = Short(self.getConst(str(frame)), cortege(*v_to))
+      pair = pair.replace([1, 0], ns_to)
+#    print(pair)
+#    print()
+
+    n = self.nn.get(pair.args[0].groupID, [])
+    n = [el for el in n if not isFIn(el, pair)]
+    if not any(isFIn(pair, el) for el in n):
+      n.append(pair)
+    else:
+      return False
+    self.nn[pair.args[0].groupID] = n
+    return True
 
 def tighten(f, s0=None, include_all=False):
-  nn = {}
-  breadth_first_search(f, lambda pair, h: appendPair(pair, nn), s0=s0, include_all=include_all)
+  appender = Appender()
+  breadth_first_search(f, lambda pair, h: appender.appendPair(pair), s0=s0, include_all=include_all)
   n = []
-  for _, value in nn.items():
+  for _, value in appender.nn.items():
 #    print('Len:'+str(len(value)))
     n = n + value
 #  print('----')
