@@ -1,30 +1,30 @@
 # Basic Iterative Automaton Calculator
 
-This project is intended to provide a minimalistic abstract interpretation framework based capable for mechanizing black-box reductions proofs in computational settings.
+This project is intended to provide a minimalistic abstract interpretation-based framework capable to mechanizing black-box reductions proofs in computational settings.
 
 The work is in the early stage of development.
 
 ## Current status: proof-of-concept, DRAFT
 
-* Theoretical paper: draft version. The framework itself and example mechanized proofs are presented in full. For most of the technical statements the proof is abscent.
+* Theoretical paper: draft version. The framework itself and example mechanized proofs are presented in full. For most technical statements, the proof is currently abscent.
 The theory of polynomial operator needs in-depth check.
-* Algorithm implementations. They do work, but the code is not prepared for easy-reading and is not annotated.
+* Algorithm implementations. They do work, but the code is not prepared for easy reading and is not annotated.
 
 ## Examples of mechanized proofs
 
-Each example consist of three parts: 
+Each example consists of three parts: 
 programs for used iterative automatons, 
-a list of proved eqivalences,
+a list of proved equalities,
 dump files for proofs of those equivalences.
 
 Program syntax in python files slightly differs from one described
 in the paper, but semantics is the same.
 
-Dump files consist of a enumeration of some of variants of input sequences that algorithm has brute-forced through.
+Dump files consist of an enumeration of some variants of input sequences that the algorithm has brute-forced through.
 
 The algorithm is not originally designed to provide such dumps. We added 
-euristic to generate those logs, but results may not be accurate. 
-In particular, 1. the variable names differs between calls, 2. some sequences are duplicated, 3. some variants may be abscent (but they shouldn't).
+heuristic to generate those logs, but results may not be accurate. 
+In particular, 1. the variable names differ between calls, 2. some sequences are duplicated, 3. some variants may be absent (but they shouldn't).
 
 
 ## Example 1. Combinators 
@@ -40,7 +40,7 @@ S x y z = (x z) (y z). This is the intended behavior, the equation is wrong beca
 
 In [uc/ucnet.py](uc/ucnet.py) we provide definitions for Exec, Net and DummyAdv automatons. 
 
-The example [ex-uc-dummy-adv.py](ex-uc-dummy-adv.py) contains definition for AdvZ automaton and of the following automaton equation
+The example [ex-uc-dummy-adv.py](ex-uc-dummy-adv.py) contains a definition for AdvZ automaton and of the following automaton equation
 
 [Z(Exec(A, N)) = AdvZ(Z, A)(Exec(DummyAdv, N))](dumps/uc-dummy-adv.txt),
 
@@ -48,7 +48,7 @@ where Z, A and N are arbitrary iterative automatons.
 
 ## Example 2.2. UC: Composition Theorem
 
-In this example we use iterative automaton UComp from [uc/ucnet.py](uc/ucnet.py), while the rest of automatons are defined alongside equivalence checks
+In this example, we use iterative automaton UComp from [uc/ucnet.py](uc/ucnet.py), while the rest of automatons are defined alongside equivalence checks
 in [ex-uc-composability.py](ex-uc-composability.py).
 
 The theorem states that if 
@@ -130,7 +130,7 @@ Finally, we show that
 
 All automatons are defined in [ex-hybrid.py](ex-hybrid.py).
 
-We formulate a hybrid principle which incorporates hybrid argument technique and mathematical induction.
+We formulate a hybrid principle that incorporates a hybrid argument technique and mathematical induction.
 
 Let H be a hybrid automaton that should be composed with another one to form either 
 
@@ -144,15 +144,15 @@ or something intermediate
 
 HX = H G.
 
-The Shift automaton is made in a such a way that Shift H = H', where H' in (H' G) gets a one additional 0 comparing to H in (H G).
+The Shift automaton is made in such a way that Shift H = H', where H' in (H' G) gets one additional 0 compared to H in (H G).
 
 We state that if H =_P H' then HA =_P HB and demonstrate an application of this theorem.
 
-We call MX an multiplexor for X if MImitate(MX) =_P ButOne(MX, X). 
+We call MX a multiplexor for X if MImitate(MX) =_P ButOne(MX, X). 
 The automaton ButOne(MX, X)(G) works as MX if G always returns 0, or
 it replaces one first call (roughly speaking) of MX to call to X, when G outputs first 1. The automaton MImitate(MX)(G) just ignores G, i.e. MImitate(MX)(G)=MX.
 
-Suppose MA is an multiplexor for A and MB is an multiplexor for B, and A =_P B. We prove that in this case MA =_P MB.
+Suppose MA is a multiplexor for A and MB is an multiplexor for B, and A =_P B. We prove that in this case MA =_P MB.
 
 First, we construct the automaton HybridM such that 
 [HybridM(MA, MB)(Const(0))=_A MA](dumps/hybrid-0.txt) and
