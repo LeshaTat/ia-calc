@@ -50,5 +50,5 @@ DummyAdv = DummyAdv.tighten()
 breadth_first_search_diff_mem(
   Z(Exec(A, N)), 
   AdvZ(Z, A)(Exec(DummyAdv, N)), 
-  cbk=Dumper("dumps/uc-dummy-adv.txt")
+  cbk=Dumper("dumps/uc-dummy-adv")
 )

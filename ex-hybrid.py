@@ -253,29 +253,29 @@ Shift = Shift.tighten()
 breadth_first_search_diff_mem(
   HybridM(MX, MY)(C0), MX, 
   partition=Partition([(["0"], x), (["1"], x)]),
-  cbk=Dumper("dumps/hybrid-0.txt")
+  cbk=Dumper("dumps/hybrid-0")
 )
 
 breadth_first_search_diff_mem(
   HybridM(MX, MY)(C1), MY, 
   partition=Partition([(["0"], x), (["1"], x)]),
-  cbk=Dumper("dumps/hybrid-1.txt")
+  cbk=Dumper("dumps/hybrid-1")
 )
 
 breadth_first_search_diff_mem(
   Shift(HybridM(MX, MY)), HybridM1(MImitate(MX), MY), 
   partition=Partition([(["0"], x), (["1"], x)]),
-  cbk=Dumper("dumps/hybrid-x-imitate.txt")
+  cbk=Dumper("dumps/hybrid-x-imitate")
 )
 
 breadth_first_search_diff_mem(
   HybridM(MX, MY), HybridM2(MX, MImitate(MY)), 
   partition=Partition([(["0"], x), (["1"], x)]),
-  cbk=Dumper("dumps/hybrid-y-imitate.txt")
+  cbk=Dumper("dumps/hybrid-y-imitate")
 )
 
 breadth_first_search_diff_mem(
   HybridM1(ButOne(MX, Z), MY), HybridM2(MX, ButOne(MY, Z)),
   partition=Partition([(["0"], x), (["1"], x)]),
-  cbk=Dumper("dumps/hybrid-x-y-swap.txt")
+  cbk=Dumper("dumps/hybrid-x-y-swap")
 )

@@ -70,7 +70,7 @@ print("Composition")
 breadth_first_search_diff(
   composition(X, Y).tighten(), 
   X(Y).tighten(), 
-  cbk=Dumper("dumps/composition.txt")
+  cbk=Dumper("dumps/composition")
 )
 
 #exit(0)
@@ -79,42 +79,46 @@ print("Composition2")
 breadth_first_search_diff(
   composition.tighten(), 
   composition2.tighten(), 
-  cbk=Dumper("dumps/composition2.txt")
+  cbk=Dumper("dumps/composition2")
 )
+
+print("S I I (S I I)")
+printl(S(I, I, S(I, I)))
+
 
 print("B")
 breadth_first_search_diff(
   B(X, Y, Z), 
   X(Y(Z)), 
-  cbk=Dumper("dumps/combinators-B.txt")
+  cbk=Dumper("dumps/combinators-B")
 )
 
 print("C")
 breadth_first_search_diff(
   C(X, Y, Z), 
   X(Z, Y), 
-  cbk=Dumper("dumps/combinators-C.txt")
+  cbk=Dumper("dumps/combinators-C")
 )
 
 print("K")
 breadth_first_search_diff(
   K(X, Y), 
   X, 
-  Dumper("dumps/combinators-K.txt")
+  Dumper("dumps/combinators-K")
 )
 
 print("SKK=I")
 breadth_first_search_diff(
   S(K, K), 
   I, 
-  cbk=Dumper("dumps/combinators-SKK.txt")
+  cbk=Dumper("dumps/combinators-SKK")
 )
 
 print("B=S(KS)S")
 breadth_first_search_diff(
   B, 
   S(K(S), K), 
-  cbk=Dumper("dumps/combinators-B-SKSS.txt")
+  cbk=Dumper("dumps/combinators-B-SKSS")
 )
 
 print("C = (S (S (K (S (K S) K)) S) (K K))")
@@ -122,7 +126,7 @@ formula = S(S(K(S(K(S), K)), S), K(K))
 breadth_first_search_diff(
   C, 
   formula, 
-  cbk=Dumper("dumps/combinators-C-SSKSKSKSKK.txt")
+  cbk=Dumper("dumps/combinators-C-SSKSKSKSKK")
 )
 
 print("S")

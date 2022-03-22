@@ -153,7 +153,7 @@ try:
   ])
   if True:
     breadth_first_search_diff_mem(RealModel, RealModelXReal,
-      cbk=Dumper("dumps/uc-auth-addsignlib.txt"),
+      cbk=Dumper("dumps/uc-auth-addsignlib"),
 #      cbk=check_message_sent,
       partition=partition
     )

@@ -1,0 +1,300 @@
+*** 1 ***
+Out(Up(Up(Up(a)))) ->
+[0]
+
+Out(Down(Up(Up(b)))) ->
+PosVarsInp(ID([0.1.0]), (a, [0], [0], [0]), [0])
+
+Out(Up(Up(Up(a)))) ->
+StateVars(())
+
+*** 2 ***
+Out(Up(Up(Up(a)))) ->
+[0]
+
+Out(Down(Down(b))) ->
+PosVarsInp(ID([0.1.0]), (a, [0], [0], [0]), [0])
+
+Out(Up(Up(Down(c)))) ->
+PosVarsInp(ID([0.1.1.0.3]), (a, [0], b, [0]), [0])
+
+Out(Down(Down(c))) ->
+PosVarsInp(ID([0.1.1.0.4]), (a, [0], b, [0]), [0])
+
+Out(Up(Up(Down(c)))) ->
+PosVarsInp(ID([0.1.1.0.3]), (a, [0], b, [0]), [0])
+
+*** 3 ***
+Out(Up(Up(Up(a)))) ->
+[0]
+
+Out(Down(Down(b))) ->
+PosVarsInp(ID([0.1.0]), (a, [0], [0], [0]), [0])
+
+Out(Up(Up(Down(c)))) ->
+PosVarsInp(ID([0.1.1.0.3]), (a, [0], b, [0]), [0])
+
+Out(Down(Up(Up(c)))) ->
+PosVarsInp(ID([0.1.1.0.4]), (a, [0], b, [0]), [0])
+
+Out(Up(Up(Up(a)))) ->
+StateVars(())
+
+*** 4 ***
+Out(Up(Up(Up(a)))) ->
+[0]
+
+Out(Down(Up(Down(b)))) ->
+PosVarsInp(ID([0.1.0]), (a, [0], [0], [0]), [0])
+
+Out(Up(Down(c))) ->
+PosVarsInp(ID([0.1.1.1.3]), (a, [0], [0], b), [0])
+
+Out(Down(Up(Down(c)))) ->
+PosVarsInp(ID([0.1.1.1.4]), (a, [0], [0], b), [0])
+
+Out(Up(Down(c))) ->
+PosVarsInp(ID([0.1.1.1.3]), (a, [0], [0], b), [0])
+
+*** 5 ***
+Out(Up(Up(Up(a)))) ->
+[0]
+
+Out(Down(Down(b))) ->
+PosVarsInp(ID([0.1.0]), (a, [0], [0], [0]), [0])
+
+Out(Up(Up(Down(c)))) ->
+PosVarsInp(ID([0.1.1.0.3]), (a, [0], b, [0]), [0])
+
+Out(Down(Up(Down(c)))) ->
+PosVarsInp(ID([0.1.1.0.4]), (a, [0], b, [0]), [0])
+
+Out(Up(Down(c))) ->
+PosVarsInp(ID([0.1.1.1.3]), (a, [0], [0], b), [0])
+
+Out(Down(Down(c))) ->
+PosVarsInp(ID([0.1.1.1.4]), (a, [0], [0], b), [0])
+
+*** 6 ***
+Out(Up(Up(Up(a)))) ->
+[0]
+
+Out(Down(Down(b))) ->
+PosVarsInp(ID([0.1.0]), (a, [0], [0], [0]), [0])
+
+Out(Up(Up(Down(c)))) ->
+PosVarsInp(ID([0.1.1.0.3]), (a, [0], b, [0]), [0])
+
+Out(Down(Up(Down(c)))) ->
+PosVarsInp(ID([0.1.1.0.4]), (a, [0], b, [0]), [0])
+
+Out(Up(Down(c))) ->
+PosVarsInp(ID([0.1.1.1.3]), (a, [0], [0], b), [0])
+
+Out(Down(Up(Up(c)))) ->
+PosVarsInp(ID([0.1.1.1.4]), (a, [0], [0], b), [0])
+
+*** 7 ***
+Out(Up(Up(Up(a)))) ->
+[0]
+
+Out(Down(Up(Down(b)))) ->
+PosVarsInp(ID([0.1.0]), (a, [0], [0], [0]), [0])
+
+Out(Up(Down(c))) ->
+PosVarsInp(ID([0.1.1.1.3]), (a, [0], [0], b), [0])
+
+Out(Down(Down(c))) ->
+PosVarsInp(ID([0.1.1.1.4]), (a, [0], [0], b), [0])
+
+Out(Up(Up(Down(c)))) ->
+PosVarsInp(ID([0.1.1.0.3]), (a, [0], b, [0]), [0])
+
+Out(Down(Up(Up(c)))) ->
+PosVarsInp(ID([0.1.1.0.4]), (a, [0], b, [0]), [0])
+
+*** 8 ***
+Out(Up(Up(Up(a)))) ->
+[0]
+
+Out(Down(Up(Down(b)))) ->
+PosVarsInp(ID([0.1.0]), (a, [0], [0], [0]), [0])
+
+Out(Up(Down(c))) ->
+PosVarsInp(ID([0.1.1.1.3]), (a, [0], [0], b), [0])
+
+Out(Down(Up(Up(c)))) ->
+PosVarsInp(ID([0.1.1.1.4]), (a, [0], [0], b), [0])
+
+Out(Up(Up(Up(a)))) ->
+StateVars(())
+
+Out(Down(Up(Down(b)))) ->
+PosVarsInp(ID([0.1.0]), (a, [0], [0], [0]), [0])
+
+*** 9 ***
+Out(Up(Up(Up(a)))) ->
+[0]
+
+Out(Down(Up(Down(b)))) ->
+PosVarsInp(ID([0.1.0]), (a, [0], [0], [0]), [0])
+
+Out(Up(Down(c))) ->
+PosVarsInp(ID([0.1.1.1.3]), (a, [0], [0], b), [0])
+
+Out(Down(Down(c))) ->
+PosVarsInp(ID([0.1.1.1.4]), (a, [0], [0], b), [0])
+
+Out(Up(Up(Down(c)))) ->
+PosVarsInp(ID([0.1.1.0.3]), (a, [0], b, [0]), [0])
+
+Out(Down(Down(c))) ->
+PosVarsInp(ID([0.1.1.0.4]), (a, [0], b, [0]), [0])
+
+Out(Up(Up(Down(c)))) ->
+PosVarsInp(ID([0.1.1.0.3]), (a, [0], b, [0]), [0])
+
+*** 10 ***
+Out(Up(Up(Up(a)))) ->
+[0]
+
+Out(Down(Up(Down(b)))) ->
+PosVarsInp(ID([0.1.0]), (a, [0], [0], [0]), [0])
+
+Out(Up(Down(c))) ->
+PosVarsInp(ID([0.1.1.1.3]), (a, [0], [0], b), [0])
+
+Out(Down(Down(c))) ->
+PosVarsInp(ID([0.1.1.1.4]), (a, [0], [0], b), [0])
+
+Out(Up(Up(Down(c)))) ->
+PosVarsInp(ID([0.1.1.0.3]), (a, [0], b, [0]), [0])
+
+Out(Down(Up(Down(c)))) ->
+PosVarsInp(ID([0.1.1.0.4]), (a, [0], b, [0]), [0])
+
+Out(Up(Down(c))) ->
+PosVarsInp(ID([0.1.1.1.3]), (a, [0], [0], b), [0])
+
+*** 11 ***
+Out(Up(Up(Up(a)))) ->
+[0]
+
+Out(Down(Up(Down(b)))) ->
+PosVarsInp(ID([0.1.0]), (a, [0], [0], [0]), [0])
+
+Out(Up(Down(c))) ->
+PosVarsInp(ID([0.1.1.1.3]), (a, [0], [0], b), [0])
+
+Out(Down(Up(Up(c)))) ->
+PosVarsInp(ID([0.1.1.1.4]), (a, [0], [0], b), [0])
+
+Out(Up(Up(Up(a)))) ->
+StateVars(())
+
+Out(Down(Up(Up(b)))) ->
+PosVarsInp(ID([0.1.0]), (a, [0], [0], [0]), [0])
+
+Out(Up(Up(Up(a)))) ->
+StateVars(())
+
+*** 12 ***
+Out(Up(Up(Up(a)))) ->
+[0]
+
+Out(Down(Down(b))) ->
+PosVarsInp(ID([0.1.0]), (a, [0], [0], [0]), [0])
+
+Out(Up(Up(Down(c)))) ->
+PosVarsInp(ID([0.1.1.0.3]), (a, [0], b, [0]), [0])
+
+Out(Down(Up(Down(c)))) ->
+PosVarsInp(ID([0.1.1.0.4]), (a, [0], b, [0]), [0])
+
+Out(Up(Down(c))) ->
+PosVarsInp(ID([0.1.1.1.3]), (a, [0], [0], b), [0])
+
+Out(Down(Up(Down(c)))) ->
+PosVarsInp(ID([0.1.1.1.4]), (a, [0], [0], b), [0])
+
+Out(Up(Down(c))) ->
+PosVarsInp(ID([0.1.1.1.3]), (a, [0], [0], b), [0])
+
+*** 13 ***
+Out(Up(Up(Up(a)))) ->
+[0]
+
+Out(Down(Up(Down(b)))) ->
+PosVarsInp(ID([0.1.0]), (a, [0], [0], [0]), [0])
+
+Out(Up(Down(c))) ->
+PosVarsInp(ID([0.1.1.1.3]), (a, [0], [0], b), [0])
+
+Out(Down(Up(Up(c)))) ->
+PosVarsInp(ID([0.1.1.1.4]), (a, [0], [0], b), [0])
+
+Out(Up(Up(Up(a)))) ->
+StateVars(())
+
+Out(Down(Down(b))) ->
+PosVarsInp(ID([0.1.0]), (a, [0], [0], [0]), [0])
+
+Out(Up(Up(Down(c)))) ->
+PosVarsInp(ID([0.1.1.0.3]), (a, [0], b, [0]), [0])
+
+Out(Down(Up(Down(c)))) ->
+PosVarsInp(ID([0.1.1.0.4]), (a, [0], b, [0]), [0])
+
+*** 14 ***
+Out(Up(Up(Up(a)))) ->
+[0]
+
+Out(Down(Up(Down(b)))) ->
+PosVarsInp(ID([0.1.0]), (a, [0], [0], [0]), [0])
+
+Out(Up(Down(c))) ->
+PosVarsInp(ID([0.1.1.1.3]), (a, [0], [0], b), [0])
+
+Out(Down(Up(Up(c)))) ->
+PosVarsInp(ID([0.1.1.1.4]), (a, [0], [0], b), [0])
+
+Out(Up(Up(Up(a)))) ->
+StateVars(())
+
+Out(Down(Down(b))) ->
+PosVarsInp(ID([0.1.0]), (a, [0], [0], [0]), [0])
+
+Out(Up(Up(Down(c)))) ->
+PosVarsInp(ID([0.1.1.0.3]), (a, [0], b, [0]), [0])
+
+Out(Down(Up(Up(c)))) ->
+PosVarsInp(ID([0.1.1.0.4]), (a, [0], b, [0]), [0])
+
+*** 15 ***
+Out(Up(Up(Up(a)))) ->
+[0]
+
+Out(Down(Up(Down(b)))) ->
+PosVarsInp(ID([0.1.0]), (a, [0], [0], [0]), [0])
+
+Out(Up(Down(c))) ->
+PosVarsInp(ID([0.1.1.1.3]), (a, [0], [0], b), [0])
+
+Out(Down(Up(Up(c)))) ->
+PosVarsInp(ID([0.1.1.1.4]), (a, [0], [0], b), [0])
+
+Out(Up(Up(Up(a)))) ->
+StateVars(())
+
+Out(Down(Down(b))) ->
+PosVarsInp(ID([0.1.0]), (a, [0], [0], [0]), [0])
+
+Out(Up(Up(Down(c)))) ->
+PosVarsInp(ID([0.1.1.0.3]), (a, [0], b, [0]), [0])
+
+Out(Down(Down(c))) ->
+PosVarsInp(ID([0.1.1.0.4]), (a, [0], b, [0]), [0])
+
+Out(Up(Up(Down(c)))) ->
+PosVarsInp(ID([0.1.1.0.3]), (a, [0], b, [0]), [0])
+

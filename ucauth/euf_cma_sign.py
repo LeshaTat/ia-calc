@@ -80,7 +80,7 @@ GameSignBase = lambda ideal: program(
           v('signed'), 
           MemSignedSid,
           GetByAddr(
-            MemSignedSidKey(v('pid'), v('sid')),
+            MemSignedSidKey(v('pid'), v('sid'))
           )
         ),
         Branches([
@@ -92,14 +92,6 @@ GameSignBase = lambda ideal: program(
           ]
         ]),
         lib(v('sig'), SignMakeSign, SignMakeSignArg(v('sk'), SidMes(v('sid'), v('m')))),
-        mem(
-          c0, 
-          MemSigned,
-          SetByAddrValue(
-            MemSignedKey(v('pid'), v('sid'), v('m')),
-            c1
-          )
-        ),
         mem(
           c0, 
           MemSignedSid, 
@@ -138,7 +130,6 @@ GameSignBase = lambda ideal: program(
           Branches([
             [
               Test(v('ret'), VerifiedMes(v('m'))),
-              mem(c0, MemSigned, SetByAddrValue(MemSignedKey(v('pid'), v('sid'), v('m')), c1)),
               mem(v('m'), MemSignedSid, GetByAddr(MemSignedSidKey(v('pid'), v('sid')))),
               Parse(MemSignedSidVal(v('m')), v('m')),
               Return(VerifiedMes(v('m')))

@@ -115,7 +115,6 @@ PAuth = program(
           ), 
           v('mes')
         ),
-        Call(v('ca_val'), F_CA, SidMes(c0, RetrieveGet(v('pid')))),
         Call(c0, F_CA, SidMes(c0, RetrieveReq(v('pid')))),
         Return(c0)
       ], [

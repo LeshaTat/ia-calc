@@ -1,5 +1,6 @@
 from core.iterDebug import runOnSeq
 from core.iterProgStandard import callCbk
+from core.log import Dumper
 from core.term import func, norm, Term, Func, Const, Var, termToStr
 from core.notation import *
 from core.iterAlgebra import comp, IterItem, iter_var
@@ -167,15 +168,18 @@ DummyAdv = DummyAdv.tighten()
 
 breadth_first_search_diff_mem(
   Exec(DummyAdv, Net(UComp(P, Q), H)), 
-  T1(P)(Exec(DummyAdv, Net(Q, H)))
+  T1(P)(Exec(DummyAdv, Net(Q, H))),
+  cbk=Dumper("dumps/uc-comp-P-Q"),
 )
 
 breadth_first_search_diff_mem(
   T1(P)(Exec(SQ, Net(DummyP, G))),
-  T2(SQ)(Exec(DummyAdv, Net(P, G)))
+  T2(SQ)(Exec(DummyAdv, Net(P, G))),
+  cbk=Dumper("dumps/uc-comp-P-SQ")
 )
 
 breadth_first_search_diff_mem(
   T2(SQ)(Exec(SP, Net(DummyP, F))),
-  Exec(SPQ(SP, SQ), Net(DummyP, F))
+  Exec(SPQ(SP, SQ), Net(DummyP, F)),
+  cbk=Dumper("dumps/uc-comp-SPQ")
 )

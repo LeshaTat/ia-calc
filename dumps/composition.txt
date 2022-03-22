@@ -1,0 +1,108 @@
+*** 1 ***
+Out(a) ->
+[0]
+
+LibRet([var_X], StateMesOut(b, Out(Up(c)))) ->
+SLibF(FGState(SLibG(FGState(PosVarsInp(ID([0.1]), (a, [0], [0], [0]), [0]), [1])), [0]))
+
+Out(b) ->
+SOut(FGState(SOut(FGState(StateVars(()), VarState(a))), [0]))
+
+LibRet([var_X], StateMesOut(b, Out(Up(c)))) ->
+SLibF(FGState(SLibG(FGState(PosVarsInp(ID([0.1]), (a, [0], [0], [0]), [0]), [1])), [0]))
+
+*** 2 ***
+Out(a) ->
+[0]
+
+LibRet([var_X], StateMesOut(b, Out(Up(c)))) ->
+SLibF(FGState(SLibG(FGState(PosVarsInp(ID([0.1]), (a, [0], [0], [0]), [0]), [1])), [0]))
+
+Out(b) ->
+SOut(FGState(SOut(FGState(StateVars(()), VarState(a))), [0]))
+
+LibRet([var_X], StateMesOut(b, Out(Down(c)))) ->
+SLibF(FGState(SLibG(FGState(PosVarsInp(ID([0.1]), (a, [0], [0], [0]), [0]), [1])), [0]))
+
+*** 3 ***
+Out(a) ->
+[0]
+
+LibRet([var_X], StateMesOut(b, Out(Down(c)))) ->
+SLibF(FGState(SLibG(FGState(PosVarsInp(ID([0.1]), (a, [0], [0], [0]), [0]), [1])), [0]))
+
+LibRet([var_Y], StateMesOut(d, Out(e))) ->
+SLibG(FGState(SOut(FGState(PosVarsInp(ID([0.2.0.1]), (a, Down(b), b, [0]), [0]), VarState(c))), [1]))
+
+LibRet([var_X], StateMesOut(e, Out(Down(f)))) ->
+SLibF(FGState(SLibG(FGState(PosVarsInp(ID([0.2.0.2]), (a, Down(b), b, c), [0]), [1])), VarState(d)))
+
+LibRet([var_Y], StateMesOut(e, Out(f))) ->
+SLibG(FGState(SOut(FGState(PosVarsInp(ID([0.2.0.1]), (a, Down(b), b, c), [0]), VarState(d))), [1]))
+
+LibRet([var_X], StateMesOut(e, Out(Up(f)))) ->
+SLibF(FGState(SLibG(FGState(PosVarsInp(ID([0.2.0.2]), (a, Down(b), b, c), [0]), [1])), VarState(d)))
+
+*** 4 ***
+Out(a) ->
+[0]
+
+LibRet([var_X], StateMesOut(b, Out(Down(c)))) ->
+SLibF(FGState(SLibG(FGState(PosVarsInp(ID([0.1]), (a, [0], [0], [0]), [0]), [1])), [0]))
+
+LibRet([var_Y], StateMesOut(d, Out(e))) ->
+SLibG(FGState(SOut(FGState(PosVarsInp(ID([0.2.0.1]), (a, Down(b), b, [0]), [0]), VarState(c))), [1]))
+
+LibRet([var_X], StateMesOut(e, Out(Down(f)))) ->
+SLibF(FGState(SLibG(FGState(PosVarsInp(ID([0.2.0.2]), (a, Down(b), b, c), [0]), [1])), VarState(d)))
+
+LibRet([var_Y], StateMesOut(e, Out(f))) ->
+SLibG(FGState(SOut(FGState(PosVarsInp(ID([0.2.0.1]), (a, Down(b), b, c), [0]), VarState(d))), [1]))
+
+LibRet([var_X], StateMesOut(e, Out(Down(f)))) ->
+SLibF(FGState(SLibG(FGState(PosVarsInp(ID([0.2.0.2]), (a, Down(b), b, c), [0]), [1])), VarState(d)))
+
+*** 5 ***
+Out(a) ->
+[0]
+
+LibRet([var_X], StateMesOut(b, Out(Down(c)))) ->
+SLibF(FGState(SLibG(FGState(PosVarsInp(ID([0.1]), (a, [0], [0], [0]), [0]), [1])), [0]))
+
+LibRet([var_Y], StateMesOut(d, Out(e))) ->
+SLibG(FGState(SOut(FGState(PosVarsInp(ID([0.2.0.1]), (a, Down(b), b, [0]), [0]), VarState(c))), [1]))
+
+LibRet([var_X], StateMesOut(e, Out(Up(f)))) ->
+SLibF(FGState(SLibG(FGState(PosVarsInp(ID([0.2.0.2]), (a, Down(b), b, c), [0]), [1])), VarState(d)))
+
+Out(c) ->
+SOut(FGState(SOut(FGState(StateVars(()), VarState(a))), VarState(b)))
+
+LibRet([var_X], StateMesOut(c, Out(Up(d)))) ->
+SLibF(FGState(SLibG(FGState(PosVarsInp(ID([0.1]), (a, [0], [0], [0]), [0]), [1])), VarState(b)))
+
+Out(c) ->
+SOut(FGState(SOut(FGState(StateVars(()), VarState(a))), VarState(b)))
+
+*** 6 ***
+Out(a) ->
+[0]
+
+LibRet([var_X], StateMesOut(b, Out(Down(c)))) ->
+SLibF(FGState(SLibG(FGState(PosVarsInp(ID([0.1]), (a, [0], [0], [0]), [0]), [1])), [0]))
+
+LibRet([var_Y], StateMesOut(d, Out(e))) ->
+SLibG(FGState(SOut(FGState(PosVarsInp(ID([0.2.0.1]), (a, Down(b), b, [0]), [0]), VarState(c))), [1]))
+
+LibRet([var_X], StateMesOut(e, Out(Up(f)))) ->
+SLibF(FGState(SLibG(FGState(PosVarsInp(ID([0.2.0.2]), (a, Down(b), b, c), [0]), [1])), VarState(d)))
+
+Out(c) ->
+SOut(FGState(SOut(FGState(StateVars(()), VarState(a))), VarState(b)))
+
+LibRet([var_X], StateMesOut(c, Out(Down(d)))) ->
+SLibF(FGState(SLibG(FGState(PosVarsInp(ID([0.1]), (a, [0], [0], [0]), [0]), [1])), VarState(b)))
+
+LibRet([var_Y], StateMesOut(d, Out(e))) ->
+SLibG(FGState(SOut(FGState(PosVarsInp(ID([0.2.0.1]), (a, Down(b), b, [0]), [0]), VarState(c))), [1]))
+

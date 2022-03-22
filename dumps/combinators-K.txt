@@ -1,0 +1,13 @@
+*** 1 ***
+Out(a) ->
+[0]
+
+LibRet([var_X], StateMesOut(b, Out(c))) ->
+SLibF(FGState(SLibG(FGState(PosVarsInp(ID([0.1]), (a), [0]), [1])), [0]))
+
+Out(b) ->
+SOut(FGState(SOut(FGState(StateVars(()), VarState(a))), [0]))
+
+LibRet([var_X], StateMesOut(b, Out(c))) ->
+SLibF(FGState(SLibG(FGState(PosVarsInp(ID([0.1]), (a), [0]), [1])), [0]))
+

@@ -1,0 +1,26 @@
+*** 1 ***
+Out(AddrMes(a, b)) ->
+Lib([var_Y], StateMesIn([0], Out(AddrMes(a, b))))
+
+LibRet([var_Y], StateMesOut(c, Out(d))) ->
+Out(d)
+
+Out(AddrMes(b, c)) ->
+Lib([var_Y], StateMesIn(a, Out(AddrMes(b, c))))
+
+LibRet([var_Y], StateMesOut(c, Out(d))) ->
+Out(d)
+
+*** 2 ***
+Out(AddrMes(a, b)) ->
+Lib([var_Y], StateMesIn([0], Out(AddrMes(a, b))))
+
+LibRet([var_Y], StateMesOut(c, Out(d))) ->
+Out(d)
+
+Out(AddrMes(b, c)) ->
+Lib([var_Y], StateMesIn(a, Out(AddrMes(b, c))))
+
+LibRet([var_Y], StateMesOut(c, Out(d))) ->
+Out(d)
+

@@ -203,11 +203,11 @@ try:
   if True:
 #    pass
     breadth_first_search_diff_mem(SimModelIdeal, SimModelAXIdeal,
-      cbk=Dumper("dumps/uc-auth-sim-simx.txt"),
+      cbk=Dumper("dumps/uc-auth-sim-simx"),
       partition=partition
     )
     breadth_first_search_diff_mem(RealModelXIdeal, SimModelAXIdeal,
-      cbk=Dumper("dumps/uc-auth-simx-realx.txt"),
+      cbk=Dumper("dumps/uc-auth-simx"),
       partition=partition
     )
 #    breadth_first_search_diff_mem(RealModelXReal, SimModel,
