@@ -45,7 +45,7 @@ class Dumper:
       if c.term().args[0]!=mode0:
         continue
       self.print(str(c.term().args[1].args[1])+" ->")
-      self.print(str(c.term().args[1].args[0]))
+      self.print(str(c.term().args[2].args[1]))
       self.print("")
       self.print2("STATE: " + str(c.term().args[1].args[0]))
       self.print2("MES:" + str(c.term().args[1].args[1])+" ->")

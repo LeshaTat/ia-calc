@@ -1,10 +1,10 @@
 *** 1 ***
 Out(Up(a)) ->
-[0]
+Out(Down(a))
 
 Out(Down(b)) ->
-SOut(FGState(SOut(FGState(PosVarsInp(ID([0.1.1.0.3]), (a, [0], a, [0], [0], [0]), [0]), PosVarsInp(ID([0.1]), (a), [0]))), [0]))
+Out(Up(b))
 
 Out(Up(a)) ->
-SOut(FGState(SOut(FGState(StateVars(()), StateVars(()))), [0]))
+Out(Down(a))
 
