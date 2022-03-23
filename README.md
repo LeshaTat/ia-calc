@@ -6,7 +6,7 @@ The work is in the early stage of development.
 
 ## Current status: proof-of-concept, DRAFT
 
-* Theoretical paper: draft version. The framework itself and example mechanized proofs are presented in full. For most technical statements, the proof is currently abscent.
+* Theoretical paper: [draft version](ia-calc.pdf). The framework itself and example mechanized proofs are presented in full. For most technical statements, the proof is currently abscent.
 The theory of polynomial operator needs in-depth check.
 * Algorithm implementations. They do work, but the code is not prepared for easy reading and is not annotated.
 
@@ -152,7 +152,7 @@ We call MX a multiplexor for X if MImitate(MX) =_P ButOne(MX, X).
 The automaton ButOne(MX, X)(G) works as MX if G always returns 0, or
 it replaces one first call (roughly speaking) of MX to call to X, when G outputs first 1. The automaton MImitate(MX)(G) just ignores G, i.e. MImitate(MX)(G)=MX.
 
-Suppose MA is a multiplexor for A and MB is an multiplexor for B, and A =_P B. We prove that in this case MA =_P MB.
+Suppose MA is a multiplexor for A and MB is an multiplexor for B, and A =_P B. We prove that MA =_P MB in this case.
 
 First, we construct the automaton HybridM such that 
 [HybridM(MA, MB)(Const(0))=_A MA](dumps/hybrid-0.txt) and
