@@ -31,7 +31,7 @@ In particular, 1. the variable names differ between calls, 2. some sequences are
 
 In [ex-combinators.py](ex-combinators.py) we provide definitions for combinators I, K, B, C, S and checks the following equations:
 [K x y = x](dumps/combinators-K.txt), [B x y z= x (y z)](dumps/combinators-B.txt), [C x y z = x z y](dumps/combinators-C.txt), [S K K = I](dumps/combinators-SKK.txt), [B = S (K S) S](dumps/combinators-B-SKSS.txt), [C = (S (S (K (S (K S) K)) S) (K K))](dumps/combinators-C-SSKSKSKSKK.txt). Also we checks that
-[composition x y = x y](dumps/composition.txt) and [composition2 = composition](dums/composition2.txt), see the paper for the details.
+[composition x y = x y](dumps/composition.txt) and [composition2 = composition](dumps/composition2.txt), see the paper for the details.
 
 Note that execution of this example fails on the equation
 S x y z = (x z) (y z). This is the intended behavior, the equation is wrong because z's on the right side would have separated states.
@@ -94,7 +94,7 @@ Here we use a bunch of definitions
 
 The list of technical automatons include
 
-- [SimX_auth](ucauth/simauth.py) - simulator, that uses GameSign(Real/Ideal)
+- [SimX_auth](ucauth/sim_auth.py) - simulator, that uses GameSign(Real/Ideal)
 - [FX_auth](ucauth/F_auth.py) - modified Authentication channel functionality with some checks relinked to a GameSign(Real/Ideal)
 - [PX_auth](ucauth/pauth.py) - modified authentication protocol based on GameSign(Real/Ideal)
 - [lib2call](core/iterExtract.py) - a function that connects
