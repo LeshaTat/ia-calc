@@ -78,7 +78,6 @@ def accBitDelta(b, d, fr = None):
     [
       Test([fr, v('bOld')], [c1, c0]),
       Set(d, c1),
-      Set(v('bOld'), c1),
       Set(b, c1)
     ],
     [
@@ -142,26 +141,15 @@ Shift = program(
   2,
   lambda v, A, X: [    
     Message(v('mes')),
-    Call(v('mesA'), A, Up(v('mes'))),
-    Branches([
-      [
-        Parse(Down(v('mesAB')), mesA),
-        Call(v('mesBA'), X, v('mesAB')),
-        accBitDelta(v('b'), v('d'), v('mesBA')),
-        Branches([
-          [Test(v('d'), c1), Set(v('b'), c0)],
-          [Test(v('d'), c0)]
-        ]),
-        Set(v('d1'), Func("DebugD")(v('d'))),
-        Set(v('d2'), Func("DebugShift")(v('b'))),
-        Call(mesA, A, Down(v('b'))),
-        Back()
-      ],
-      [
-        Parse(Up(v('mes')), v('mesA')),
-        Return(v('mes'))
-      ]
-    ])
+    callCbk(v('mesA'), A, v('mes'), lambda m: [
+      Call(v('mesBA'), X, m),
+      accBitDelta(m, v('d'), v('mesBA')),
+      Branches([
+        [Test(v('d'), c1), Set(m, c0)],
+        [Test(v('d'), c0)]
+      ])
+    ]),
+    Return(v('mesA'))
   ]
 )
 
