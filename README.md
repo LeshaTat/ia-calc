@@ -1,6 +1,6 @@
 # Basic Iterative Automaton Calculator
 
-This project is intended to provide a minimalistic abstract interpretation-based framework capable to mechanizing black-box reductions proofs in computational settings.
+This project is intended to provide a minimalistic abstract interpretation-based framework capable to mechanizing black-box reduction-based proofs in computational settings.
 
 The work is in the early stage of development.
 
