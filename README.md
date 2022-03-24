@@ -109,7 +109,7 @@ an automaton to a library realization for specific library name (e.g. GameSign i
 We assume that GameSignReal =_P GameSignIdeal. Let's prove that
 
 Exec(DummyAdv,Net(UCShell(P_auth),F_CA)) =_P
-Exec(SimIdeal_auth, Net(UCShell(DummyP),F_auth))
+Exec(SimIdeal_auth, Net(DummyP,F_auth))
 
 First, replace all protocol calls to signature scheme with calls to GameSign
 (see [ex-uc-auth-1.py](ex-uc-auth-1.py)).
@@ -122,11 +122,11 @@ Exec(DummyAdv,Net(UCShell(PReal_auth),F_CA)) =_P Exec(DummyAdv,Net(UCShell(PIdea
 
 In [ex-uc-auth-2.py](ex-uc-auth-2.py) we prove that this scheme is equivalent to the one with modified FX_auth functionality that shares requests to GameSign with PX_auth
 
-[Exec(DummyAdv,Net(UCShell(PIdeal_auth),F_CA)) = lib2call(GameSign, Exec(SimX_auth, Net(UCShell(DummyP),FX_auth)), SignGameIdeal)](dumps/uc-auth-sim-simx.txt)
+[Exec(DummyAdv,Net(UCShell(PIdeal_auth),F_CA)) = lib2call(GameSign, Exec(SimX_auth, Net(DummyP,FX_auth)), SignGameIdeal)](dumps/uc-auth-sim-simx.txt)
 
 Finally, we show that
 
-[lib2call(GameSign, Exec(SimX_auth, Net(UCShell(DummyP),FX_auth)), SignGameIdeal)= Exec(SimIdeal_auth, Net(UCShell(DummyP),F_auth))](dumps/uc-auth-simx.txt)
+[lib2call(GameSign, Exec(SimX_auth, Net(DummyP,FX_auth)), SignGameIdeal)= Exec(SimIdeal_auth, Net(DummyP,F_auth))](dumps/uc-auth-simx.txt)
 
 ## Example 3. Hybrid Argument
 
