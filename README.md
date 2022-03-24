@@ -84,7 +84,7 @@ T2(SQ)(Exec(DummyAdv, Net(P, G))) =_P T2(SQ)(Exec(SP, Net(DummyP, F)))
 
 Automatons T1 and T2 are also defined in [ex-uc-composability.py](ex-uc-composability.py).
 
-## Example 2.3. UC: Authentication channel
+## Example 2.3. UC: Authenticated channel
 
 Here we use a bunch of definitions
 
