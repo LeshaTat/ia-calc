@@ -17,6 +17,8 @@ programs for used iterative automatons,
 a list of proved equalities,
 dump files for proofs of those equivalences.
 
+We use an algebra of iterative automatons with one operation that resembles oracle-based composition of Turing machines. For example, equality B x y z = x (y z) is somewhat similar to B^x,y,z = x^(y^z), which says that the Turing machine B with three oracles x, y, z (we use carrying-style notation) works in the same way that the oracle-based composition of Turing machines x, y, z. Here we assume that oracle requests of x, y, z are send back to B.
+
 Program syntax in python files slightly differs from one described
 in the paper, but semantics is the same.
 
